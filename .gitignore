@@ -1,0 +1,26 @@
+# ===== Python / Backend =====
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+
+# Django / FastAPI / general
+.env
+.env.*
+*.log
+
+# ===== Node / Frontend =====
+node_modules/
+dist/
+.vite/
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== IDE =====
+.vscode/
+.idea/
