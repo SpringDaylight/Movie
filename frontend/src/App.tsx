@@ -4,8 +4,8 @@ import HomePage from "./pages/HomePage";
 import MoviesPage from "./pages/MoviesPage";
 import MovieDetailPage from "./pages/MovieDetailPage";
 import GroupPage from "./pages/GroupPage";
-import MyPage from "./pages/MyPage";
 import TasteAnalysisPage from "./pages/TasteAnalysisPage";
+import ActivityPage from "./pages/ActivityPage";
 import LogPage from "./pages/LogPage";
 import ReviewDetailPage from "./pages/ReviewDetailPage";
 
@@ -18,7 +18,7 @@ export default function App() {
         <Route path="/movies" element={<MoviesPage />} />
         <Route path="/movies/:movieId" element={<MovieDetailPage />} />
         <Route path="/group" element={<GroupPage />} />
-        <Route path="/mypage" element={<MyPage />} />
+        <Route path="/mypage" element={<ActivityPage />} />
         <Route path="/taste-analysis" element={<TasteAnalysisPage />} />
         <Route path="/log" element={<LogPage />} />
         <Route path="/reviews/:reviewId" element={<ReviewDetailPage />} />

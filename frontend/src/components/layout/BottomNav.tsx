@@ -16,7 +16,7 @@ export default function BottomNav() {
         같이 보기
       </NavLink>
       <NavLink to="/mypage" className={navClass}>
-        마이페이지
+        내 활동
       </NavLink>
     </nav>
   );

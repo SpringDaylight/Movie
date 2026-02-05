@@ -1,8 +1,24 @@
+import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 
 export default function Header() {
   const navClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? "active" : undefined;
+  const [profileHref, setProfileHref] = useState("/login");
+  const [profileLabel, setProfileLabel] = useState("로그인");
+
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("mw_logged_in") === "true";
+    const savedName = localStorage.getItem("mw_profile_name");
+
+    if (isLoggedIn) {
+      setProfileHref("/profile");
+      setProfileLabel(savedName ? savedName.slice(0, 2) : "DS");
+    } else {
+      setProfileHref("/login");
+      setProfileLabel("로그인");
+    }
+  }, []);
 
   return (
     <header className="top-bar">
@@ -26,12 +42,14 @@ export default function Header() {
             같이 정하기
           </NavLink>
           <NavLink to="/mypage" className={navClass}>
-            마이페이지
+            내 활동
           </NavLink>
         </nav>
 
         <div className="top-actions">
-          <button className="profile-chip">DS</button>
+          <Link className="profile-chip" to={profileHref}>
+            {profileLabel}
+          </Link>
         </div>
       </div>
     </header>
