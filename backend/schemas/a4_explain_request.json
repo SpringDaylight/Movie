@@ -1,10 +1,9 @@
 {
   "type": "object",
-  "required": ["movie_title", "match_rate", "explanation", "key_factors", "disclaimer"],
+  "required": ["movie_title", "match_rate", "key_factors"],
   "properties": {
     "movie_title": { "type": "string" },
     "match_rate": { "type": "number" },
-    "explanation": { "type": "string" },
     "key_factors": {
       "type": "array",
       "items": {
@@ -18,7 +17,7 @@
         "additionalProperties": false
       }
     },
-    "disclaimer": { "type": "string" }
+    "user_text": { "type": "string" }
   },
   "additionalProperties": false
 }

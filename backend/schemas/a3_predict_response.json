@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required": ["movie_id", "title", "raw_score", "match_rate"],
+  "properties": {
+    "movie_id": { "type": ["string", "number", "null"] },
+    "title": { "type": "string" },
+    "raw_score": { "type": "number" },
+    "match_rate": { "type": "number" }
+  },
+  "additionalProperties": false
+}

@@ -1,20 +1,19 @@
 # 취향 지도 로직
 def build_taste_map(payload: dict) -> dict:
     """
-    A-7: 취향 지도 생성
+    A-7: 취향 지도 출력
     """
+    clusters = [
+        {"cluster_id": 0, "label": "Warm·Growth", "count": 12},
+        {"cluster_id": 1, "label": "Calm·Healing", "count": 8},
+    ]
+
     return {
-        "clusters": [
-            {
-                "cluster_id": 0,
-                "label": "잔잔한 성장 드라마",
-                "movies": ["movie_1", "movie_3"]
-            },
-            {
-                "cluster_id": 1,
-                "label": "씁쓸한 로맨스",
-                "movies": ["movie_2"]
-            }
-        ],
-        "user_position": {"x": 0.3, "y": 0.7}
+        "clusters": clusters,
+        "user_location": {
+            "x": 0.3,
+            "y": 0.7,
+            "nearest_cluster": 0,
+            "cluster_label": clusters[0]["label"],
+        },
     }

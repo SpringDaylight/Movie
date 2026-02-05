@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "required": ["group_score", "members", "comment"],
+  "properties": {
+    "group_score": { "type": "number" },
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["user_id", "score"],
+        "properties": {
+          "user_id": { "type": "string" },
+          "score": { "type": "number" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "comment": { "type": "string" }
+  },
+  "additionalProperties": false
+}
