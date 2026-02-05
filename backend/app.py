@@ -22,7 +22,7 @@ def health() -> dict:
 def analyze_preference_endpoint(body: dict) -> dict:
     try:
         validate_request("a1_preference_request.json", body)
-        return analyze_preference(body["text"])
+        return analyze_preference(body)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))
 
@@ -58,8 +58,7 @@ def explain_prediction_endpoint(body: dict) -> dict:
 def emotional_search_endpoint(body: dict) -> dict:
     try:
         validate_request("a5_search_request.json", body)
-        query = body.get("query", "")
-        return emotional_search(query)
+        return emotional_search(body)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))
 

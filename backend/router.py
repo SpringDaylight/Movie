@@ -17,7 +17,7 @@ def route(event: dict) -> dict:
     try:
         if path == "/analyze/preference":
             validate_request("a1_preference_request.json", body)
-            return success(analyze_preference(body["text"]))
+            return success(analyze_preference(body))
 
         if path == "/movie/vector":
             validate_request("a2_movie_vector_request.json", body)
@@ -33,7 +33,7 @@ def route(event: dict) -> dict:
 
         if path == "/search/emotional":
             validate_request("a5_search_request.json", body)
-            return success(emotional_search(body["query"]))
+            return success(emotional_search(body))
 
         if path == "/group/simulate":
             validate_request("a6_group_request.json", body)
