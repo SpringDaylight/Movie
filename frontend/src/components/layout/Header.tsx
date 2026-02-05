@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 
 export default function Header() {
@@ -7,7 +7,7 @@ export default function Header() {
   const [profileHref, setProfileHref] = useState("/login");
   const [profileLabel, setProfileLabel] = useState("로그인");
 
-  useEffect(() => {
+  const syncProfile = useCallback(() => {
     const isLoggedIn = localStorage.getItem("mw_logged_in") === "true";
     const savedName = localStorage.getItem("mw_profile_name");
 
@@ -19,6 +19,18 @@ export default function Header() {
       setProfileLabel("로그인");
     }
   }, []);
+
+  useEffect(() => {
+    syncProfile();
+    const handleAuthChange = () => syncProfile();
+    window.addEventListener("mw_auth_change", handleAuthChange);
+    window.addEventListener("storage", handleAuthChange);
+
+    return () => {
+      window.removeEventListener("mw_auth_change", handleAuthChange);
+      window.removeEventListener("storage", handleAuthChange);
+    };
+  }, [syncProfile]);
 
   return (
     <header className="top-bar">

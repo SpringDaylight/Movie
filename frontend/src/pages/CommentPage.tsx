@@ -1,6 +1,6 @@
 import MainLayout from "../components/layout/MainLayout";
 
-export default function LogPage() {
+export default function CommentPage() {
   return (
     <MainLayout>
       <main className="container">

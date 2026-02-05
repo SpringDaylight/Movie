@@ -6,8 +6,9 @@ import MovieDetailPage from "./pages/MovieDetailPage";
 import GroupPage from "./pages/GroupPage";
 import TasteAnalysisPage from "./pages/TasteAnalysisPage";
 import ActivityPage from "./pages/ActivityPage";
-import LogPage from "./pages/LogPage";
+import CommentPage from "./pages/CommentPage";
 import ReviewDetailPage from "./pages/ReviewDetailPage";
+import ProfilePage from "./pages/ProfilePage";
 
 export default function App() {
   return (
@@ -20,7 +21,8 @@ export default function App() {
         <Route path="/group" element={<GroupPage />} />
         <Route path="/mypage" element={<ActivityPage />} />
         <Route path="/taste-analysis" element={<TasteAnalysisPage />} />
-        <Route path="/log" element={<LogPage />} />
+        <Route path="/log" element={<CommentPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/reviews/:reviewId" element={<ReviewDetailPage />} />
 
         {/* 레거시 HTML 경로 대응 (전환기 안전장치) */}
