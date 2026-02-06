@@ -53,7 +53,7 @@ export default function LoginPage() {
             <div className="auth-actions">
               <Link className="secondary-btn" to="/signup">회원가입</Link>
               <Link className="secondary-btn" to="/find-id">아이디 찾기</Link>
-              <Link className="secondary-btn" to="/signup">비밀번호 찾기</Link>
+              <Link className="secondary-btn" to="/find-password">비밀번호 찾기</Link>
             </div>
           </article>
         </section>
