@@ -57,6 +57,15 @@ export default function LoginPage() {
             </div>
           </article>
         </section>
+        <section>
+          <div className="social-login">
+              <p className="muted">소셜 계정으로 로그인하기</p>
+              <div className="social-login-buttons">
+                <button className="secondary-btn social-btn" type="button"></button>
+                <button className="secondary-btn social-btn" type="button"></button>
+              </div>
+            </div>
+        </section>
       </main>
     </MainLayout>
   );

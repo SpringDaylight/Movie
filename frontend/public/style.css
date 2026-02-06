@@ -347,6 +347,15 @@ textarea {
   gap: 12px;
 }
 
+.form-grid.centered {
+  text-align: center;
+  justify-items: center;
+}
+
+.form-grid.centered .tag-list {
+  justify-content: center;
+}
+
 label {
   font-size: 0.9rem;
   color: var(--text-subtle);

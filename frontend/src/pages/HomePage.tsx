@@ -7,7 +7,7 @@ export default function HomePage() {
       <main className="container">
         <section className="hero">
           <div>
-            <p className="eyebrow">Discover</p>
+            {/* <p className="eyebrow">Discover</p> */}
             <h1>지금 기분에 맞는 영화를 찾아보세요</h1>
             <p>
               취향 데이터와 상황 맥락을 결합해 만족 가능성까지 한 번에 알려드려요.

@@ -138,10 +138,10 @@ export default function MoviesPage() {
             </div>
           </div>
 
-          <div className="section-header">
+          {/* <div className="section-header">
             <h2>필터</h2>
             <p>선택한 분류만 보기</p>
-          </div>
+          </div> */}
 
           <div className="filter-group">
             <div>

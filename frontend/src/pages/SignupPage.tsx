@@ -21,7 +21,7 @@ export default function SignupPage() {
       );
     }
     localStorage.setItem("mw_logged_in", "true");
-    navigate("/mypage");
+    navigate("/taste-survey");
   };
 
   return (
@@ -94,7 +94,7 @@ export default function SignupPage() {
         </section>
         <section>
           <div className="social-login">
-              <p className="muted">?? ???</p>
+              <p className="muted">소셜 계정으로 회원가입하기</p>
               <div className="social-login-buttons">
                 <button className="secondary-btn social-btn" type="button">???? ????</button>
                 <button className="secondary-btn social-btn" type="button">??? ????</button>

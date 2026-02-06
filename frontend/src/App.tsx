@@ -12,6 +12,7 @@ import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import FindIdPage from "./pages/FindIdPage";
+import TasteSurveyPage from "./pages/TasteSurveyPage";
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/find-id" element={<FindIdPage />} />
+        <Route path="/taste-survey" element={<TasteSurveyPage />} />
         <Route path="/reviews/:reviewId" element={<ReviewDetailPage />} />
 
         {/* 레거시 HTML 경로 대응 (전환기 안전장치) */}
