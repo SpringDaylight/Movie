@@ -5,6 +5,8 @@ import MainLayout from "../components/layout/MainLayout";
 export default function SignupPage() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [userId, setuserId] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -41,13 +43,21 @@ export default function SignupPage() {
                 value={name}
                 onChange={(event) => setName(event.target.value)}
               />
-              <label htmlFor="signup-email">이메일</label>
+              <label htmlFor="signup-nickname">닉네임</label>
               <input
-                id="signup-email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
+                id="signup-nickname"
+                type="text"
+                placeholder="닉네임"
+                value={nickname}
+                onChange={(event) => setNickname(event.target.value)}
+              />
+              <label htmlFor="signup-userid">아이디</label>
+              <input
+                id="signup-userid"
+                type="text"
+                placeholder="아이디"
+                value={userId}
+                onChange={(event) => setuserId(event.target.value)}
               />
               <label htmlFor="signup-password">비밀번호</label>
               <input
@@ -65,6 +75,14 @@ export default function SignupPage() {
                 value={confirm}
                 onChange={(event) => setConfirm(event.target.value)}
               />
+              <label htmlFor="signup-email">이메일</label>
+              <input
+                id="signup-email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
               <button className="primary-btn" type="button" onClick={handleSignup}>
                 회원가입
               </button>
@@ -73,6 +91,15 @@ export default function SignupPage() {
               이미 계정이 있나요? <Link to="/login">로그인</Link>
             </p>
           </article>
+        </section>
+        <section>
+          <div className="social-login">
+              <p className="muted">?? ???</p>
+              <div className="social-login-buttons">
+                <button className="secondary-btn social-btn" type="button">???? ????</button>
+                <button className="secondary-btn social-btn" type="button">??? ????</button>
+              </div>
+            </div>
         </section>
       </main>
     </MainLayout>

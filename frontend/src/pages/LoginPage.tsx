@@ -5,7 +5,6 @@ import MainLayout from "../components/layout/MainLayout";
 export default function LoginPage() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = () => {
@@ -26,27 +25,18 @@ export default function LoginPage() {
       <main className="container">
         <section className="page-title">
           <h1>로그인</h1>
-          <p>계정을 입력하면 바로 로그인됩니다.</p>
         </section>
 
         <section className="section">
           <article className="card">
             <div className="form-grid">
-              <label htmlFor="login-name">이름</label>
+              <label htmlFor="login-name">아이디</label>
               <input
                 id="login-name"
                 type="text"
-                placeholder="이름"
+                placeholder="아이디"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
-              />
-              <label htmlFor="login-email">이메일</label>
-              <input
-                id="login-email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
               />
               <label htmlFor="login-password">비밀번호</label>
               <input
@@ -60,9 +50,11 @@ export default function LoginPage() {
                 로그인
               </button>
             </div>
-            <p className="auth-link">
-              계정이 없나요? <Link to="/signup">회원가입</Link>
-            </p>
+            <div className="auth-actions">
+              <Link className="secondary-btn" to="/signup">회원가입</Link>
+              <Link className="secondary-btn" to="/find-id">아이디 찾기</Link>
+              <Link className="secondary-btn" to="/signup">비밀번호 찾기</Link>
+            </div>
           </article>
         </section>
       </main>
