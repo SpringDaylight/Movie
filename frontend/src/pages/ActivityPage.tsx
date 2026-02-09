@@ -1,64 +1,124 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MainLayout from "../components/layout/MainLayout";
 
 type ViewMode = "posters" | "reviews";
 
 export default function ActivityPage() {
   const [view, setView] = useState<ViewMode>("posters");
+  const navigate = useNavigate();
 
   return (
     <MainLayout>
       <main className="container">
+        
+        <section className="section">
+          <article className="card taste-preview">
+            <div className="taste-preview-header">
+              <h2>취향 분석 대시보드</h2>
+              <p>최근 평가 기반 요약</p>
+            </div>
+            <div className="taste-preview-body">
+              <div>
+                <p className="muted">선호 키워드</p>
+                <div className="tag-list" style={{ marginTop: 8 }}>
+                  <span className="tag">감정선</span>
+                  <span className="tag">몰입</span>
+                  <span className="tag">여운</span>
+                </div>
+              </div>
+              <div>
+                <p className="muted">가장 높은 장르</p>
+                <p className="probability">드라마 · SF</p>
+              </div>
+            </div>
+            <button
+              className="primary-btn taste-preview-cta"
+              type="button"
+              onClick={() => navigate("/taste-analysis")}
+            >
+              자세히보기
+            </button>
+          </article>
+        </section>
+        {/*  
         <section className="page-title">
           <h1>내 활동</h1>
           <p>내가 본 영화와 남긴 리뷰를 관리해요.</p>
-        </section>
+        </section> */}
 
         <section className="section card">
-          <div className="section-header">
-            <h2>활동 요약</h2>
-            <p>시청/리뷰/컬렉션 현황</p>
-          </div>
+          <div className="section-header centered">
+            
+            {/* <p>시청/리뷰/컬렉션 현황</p> */}
+          </div>  
           <div className="activity-stats">
-            <div>
+            <div className="stat full">
+              <h2>활동 요약</h2>
+              <p>내가 본 영화와 남긴 리뷰를 관리해요.</p>
+            </div>
+            <div
+              className="stat bottom-left clickable hoverable"
+              role="button"
+              tabIndex={0}
+              onClick={() => {
+                setView("posters");
+                setTimeout(() => {
+                  const target = document.getElementById("posters-section");
+                  if (target) {
+                    target.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }
+                }, 0);
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setView("posters");
+                  setTimeout(() => {
+                    const target = document.getElementById("posters-section");
+                    if (target) {
+                      target.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
+                  }, 0);
+                }
+              }}
+            >
               <strong>128</strong>
               <span>시청작</span>
             </div>
-            <div>
+            <div
+              className="stat bottom-right clickable hoverable"
+              role="button"
+              tabIndex={0}
+              onClick={() => {
+                setView("reviews");
+                setTimeout(() => {
+                  const target = document.getElementById("reviews-section");
+                  if (target) {
+                    target.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }
+                }, 0);
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setView("reviews");
+                  setTimeout(() => {
+                    const target = document.getElementById("reviews-section");
+                    if (target) {
+                      target.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
+                  }, 0);
+                }
+              }}
+            >
               <strong>42</strong>
               <span>리뷰</span>
-            </div>
-            <div>
-              <strong>16</strong>
-              <span>컬렉션</span>
             </div>
           </div>
         </section>
 
-        <section className="section">
-          <div className="section-header">
-            <h2>취향 분석 대시보드</h2>
-            <p>최근 평가 기반 요약</p>
-          </div>
-          <article className="card taste-preview">
-            <div>
-              <p className="muted">선호 키워드</p>
-              <div className="tag-list" style={{ marginTop: 8 }}>
-                <span className="tag">감정선</span>
-                <span className="tag">몰입</span>
-                <span className="tag">여운</span>
-              </div>
-            </div>
-            <div>
-              <p className="muted">가장 높은 장르</p>
-              <p className="probability">드라마 · SF</p>
-            </div>
-            <Link className="primary-btn" to="/taste-analysis">
-              자세히 보기
-            </Link>
-          </article>
-        </section>
+        
 
         <section className="section">
           <div className="section-header">
@@ -92,7 +152,7 @@ export default function ActivityPage() {
         </section>
 
         {view === "posters" && (
-          <section className="section view-section" data-view="posters">
+          <section className="section view-section" data-view="posters" id="posters-section">
             <div className="poster-grid">
               <Link to="/movies/1">
                 <img
@@ -171,7 +231,7 @@ export default function ActivityPage() {
         )}
 
         {view === "reviews" && (
-          <section className="section view-section" data-view="reviews">
+          <section className="section view-section" data-view="reviews" id="reviews-section">
             <div className="section-header">
               <h2>최근 리뷰</h2>
               <p>감상 기록에서 가져온 목록</p>

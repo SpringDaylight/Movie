@@ -144,29 +144,29 @@ export default function ProfilePage() {
               </div>
               <p className="muted">{profile.bio}</p>
               <div className="profile-meta">
-                <div>
-                  <span className="muted">닉네임</span>
-                  <strong>{profile.nickname}</strong>
+                <div className="profile-meta-row three">
+                  <div>
+                    <span className="muted">이름</span>
+                    <strong>{profile.realname}</strong>
+                  </div>
+                  <div>
+                    <span className="muted">나이대</span>
+                    <strong>{profile.age}</strong>
+                  </div>
+                  <div>
+                    <span className="muted">성별</span>
+                    <strong>{profile.gender}</strong>
+                  </div>
                 </div>
-                <div>
-                  <span className="muted">이름</span>
-                  <strong>{profile.realname}</strong>
-                </div>
-                <div>
-                  <span className="muted">나이대</span>
-                  <strong>{profile.age}</strong>
-                </div>
-                <div>
-                  <span className="muted">성별</span>
-                  <strong>{profile.gender}</strong>
-                </div>
-                <div>
-                  <span className="muted">아이디</span>
-                  <strong>{profile.id}</strong>
-                </div>
-                <div>
-                  <span className="muted">이메일</span>
-                  <strong>{profile.email}</strong>
+                <div className="profile-meta-row two">
+                  <div>
+                    <span className="muted">아이디</span>
+                    <strong>{profile.id}</strong>
+                  </div>
+                  <div>
+                    <span className="muted">이메일</span>
+                    <strong>{profile.email}</strong>
+                  </div>
                 </div>
               </div>
               <div className="profile-actions">
@@ -352,7 +352,7 @@ export default function ProfilePage() {
             </button>
           </div>
 
-          <div className="modal-section">
+          {/* <div className="modal-section">
             <h3>마케팅 정보</h3>
             <div className="toggle-row">
               <span>마케팅 정보 수신</span>
@@ -361,7 +361,7 @@ export default function ProfilePage() {
                 <span />
               </label>
             </div>
-          </div>
+          </div> */}
 
           <div className="modal-section">
             <h3>공개 설정</h3>
@@ -402,7 +402,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div className="modal-section">
+          {/* <div className="modal-section">
             <h3>서비스 설정</h3>
             <div className="select-row">
               <span>언어</span>
@@ -434,7 +434,7 @@ export default function ProfilePage() {
                 <span />
               </label>
             </div>
-          </div>
+          </div> */}
 
           <div className="modal-section">
             <h3>고객센터</h3>
@@ -442,9 +442,9 @@ export default function ProfilePage() {
               <button className="ghost-btn" type="button">
                 문의하기 / FAQ
               </button>
-              <button className="ghost-btn" type="button">
+              {/* <button className="ghost-btn" type="button">
                 DB 수정/추가 요청하기
-              </button>
+              </button> */}
               <button className="ghost-btn" type="button">
                 공지사항
               </button>

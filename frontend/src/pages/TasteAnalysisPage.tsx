@@ -7,7 +7,6 @@ export default function TasteAnalysisPage() {
       <main className="container">
         <section className="taste-hero">
           <div>
-            <p className="eyebrow">Taste Profile</p>
             <h1>도슨님의 취향 분석</h1>
             <p className="muted">최근 128편의 평가를 바탕으로 구성했어요.</p>
             <div className="taste-tags">
