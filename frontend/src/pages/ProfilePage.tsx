@@ -389,7 +389,7 @@ export default function ProfilePage() {
               <button className="sns-chip" type="button">
                 구글
               </button>
-              <button className="sns-chip" type="button">
+              {/* <button className="sns-chip" type="button">
                 X
               </button>
               <button className="sns-chip" type="button">
@@ -397,7 +397,7 @@ export default function ProfilePage() {
               </button>
               <button className="sns-chip" type="button">
                 라인
-              </button>
+              </button> */}
             </div>
           </div>
 
@@ -415,8 +415,8 @@ export default function ProfilePage() {
               <span>국가 및 지역</span>
               <select defaultValue="대한민국">
                 <option>대한민국</option>
+                <option>미국</option>                
                 <option>일본</option>
-                <option>미국</option>
               </select>
             </div>
             <div className="toggle-row">

@@ -13,10 +13,10 @@ export default function BottomNav() {
         영화
       </NavLink>
       <NavLink to="/group" className={navClass}>
-        같이 보기
+        다함께
       </NavLink>
       <NavLink to="/mypage" className={navClass}>
-        내 활동
+        마이 홈
       </NavLink>
     </nav>
   );
