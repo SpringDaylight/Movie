@@ -7,10 +7,12 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["user_id", "score"],
+        "required": ["user_id", "probability", "confidence", "level"],
         "properties": {
           "user_id": { "type": "string" },
-          "score": { "type": "number" }
+          "probability": { "type": "number" },
+          "confidence": { "type": "number" },
+          "level": { "type": "string" }
         },
         "additionalProperties": false
       }
