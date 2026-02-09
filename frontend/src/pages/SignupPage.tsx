@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import MainLayout from "../components/layout/MainLayout";
+import googleIcon from "../assets/web_neutral_sq_na@1x.png";
+import kakaoIcon from "../assets/kakao_sq_login.png";
+
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -27,13 +30,12 @@ export default function SignupPage() {
   return (
     <MainLayout>
       <main className="container">
-        <section className="page-title">
+        <section className="page-title centered">
           <h1>회원가입</h1>
-          <p>계정을 만들면 바로 로그인됩니다.</p>
         </section>
 
         <section className="section">
-          <article className="card">
+          <article className="card auth-card">
             <div className="form-grid">
               <label htmlFor="signup-name">이름</label>
               <input
@@ -87,19 +89,22 @@ export default function SignupPage() {
                 회원가입
               </button>
             </div>
-            <p className="auth-link">
-              이미 계정이 있나요? <Link to="/login">로그인</Link>
-            </p>
-          </article>
-        </section>
-        <section>
-          <div className="social-login">
-              <p className="muted">소셜 계정으로 회원가입하기</p>
+            <div className="auth-actions">
+              <Link className="secondary-btn" to="/login">
+                로그인으로 돌아가기
+              </Link>
+            </div>
+            <div className="social-login">
               <div className="social-login-buttons">
-                <button className="secondary-btn social-btn" type="button">???? ????</button>
-                <button className="secondary-btn social-btn" type="button">??? ????</button>
+                <button className="secondary-btn social-btn" type="button">
+                  <img src={googleIcon} alt="" />
+                </button>
+                <button className="secondary-btn social-btn" type="button">
+                  <img src={kakaoIcon} alt="" />
+                </button>
               </div>
             </div>
+          </article>
         </section>
       </main>
     </MainLayout>
