@@ -134,7 +134,7 @@ export default function ProfilePage() {
               <div className="profile-header-row">
                 <h2>{profile.nickname}</h2>
                 <button
-                  className="icon-btn"
+                  className="icon-btn settings-btn"
                   type="button"
                   aria-label="설정 열기"
                   onClick={() => setSettingsOpen(true)}
@@ -339,6 +339,7 @@ export default function ProfilePage() {
         >
           <div className="modal-overlay" onClick={() => setSettingsOpen(false)} />
           <div className="modal-content">
+            <div className="modal-scroll">
           <div className="modal-header">
             <h2 id="settings-title">설정</h2>
             <button
@@ -459,6 +460,7 @@ export default function ProfilePage() {
             </button>
           </div>
           </div>
+            </div>
         </div>
       )}
     </MainLayout>

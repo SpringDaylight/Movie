@@ -22,11 +22,17 @@ const sortFilters = [
 ];
 
 const genreFilters = [
-  { value: "drama", label: "드라마" },
   { value: "romance", label: "로맨스" },
-  { value: "sf", label: "SF" },
+  { value: "drama", label: "드라마" },
   { value: "thriller", label: "스릴러" },
+  { value: "horror", label: "공포" },
+  { value: "action", label: "액션" },
+  { value: "crime", label: "범죄" },
+  { value: "sf", label: "SF" },
+  { value: "fantasy", label: "판타지" },
+  { value: "comedy", label: "코미디" },
   { value: "animation", label: "애니메이션" },
+  { value: "history", label: "역사" },
   { value: "documentary", label: "다큐멘터리" },
 ];
 

@@ -163,7 +163,7 @@ textarea {
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 24px;
   align-items: center;
-  padding: 28px;
+  padding: 40px 28px;
   border-radius: var(--radius-lg);
   background: linear-gradient(135deg, #ffffff 0%, #fff3f7 60%, #fff 100%);
   box-shadow: var(--shadow);
@@ -186,7 +186,7 @@ textarea {
 
 .hero p {
   color: var(--text-subtle);
-  margin-bottom: 18px;
+  margin-bottom: 30px;
 }
 
 .hero-actions {
@@ -573,6 +573,7 @@ textarea {
 
 .profile-card {
   padding: 22px;
+  position: relative;
 }
 
 .profile-header {
@@ -649,6 +650,12 @@ textarea {
   cursor: pointer;
 }
 
+.settings-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+}
+
 .icon-btn:hover {
   background: #f5f5f9;
 }
@@ -707,7 +714,7 @@ textarea {
 
 .modal-content {
   position: relative;
-  width: min(720px, 100%);
+  width: min(620px, 100%);
   max-height: 90vh;
   overflow: auto;
   background: var(--bg-soft);
@@ -717,6 +724,37 @@ textarea {
   padding: 24px;
   z-index: 1;
   animation: rise 0.2s ease both;
+}
+
+/* Modal scrollbar styling */
+.modal-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(17, 17, 17, 0.35) transparent;
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: rgba(17, 17, 17, 0.35);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(17, 17, 17, 0.5);
+}
+
+.modal-content::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .modal-header {
