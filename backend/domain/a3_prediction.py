@@ -22,9 +22,12 @@ def predict_satisfaction(payload: dict) -> dict:
     def sigmoid(x: float, k: float = 8.0, x0: float = 0.5) -> float:
         return 1.0 / (1.0 + pow(2.718281828, -k * (x - x0)))
 
-    e_keys = list(user_profile.get("emotion_scores", {}).keys())
-    n_keys = list(user_profile.get("narrative_traits", {}).keys())
-    d_keys = list(user_profile.get("ending_preference", {}).keys())
+    from domain.taxonomy import load_taxonomy
+
+    taxonomy = load_taxonomy()
+    e_keys = taxonomy.get("emotion", {}).get("tags", [])
+    n_keys = taxonomy.get("story_flow", {}).get("tags", [])
+    d_keys = ["happy", "open", "bittersweet"]
 
     e_score = cosine_sim(
         align_vector(user_profile.get("emotion_scores", {}), e_keys),

@@ -6,6 +6,8 @@ def emotional_search(payload: dict) -> dict:
     """
     text = payload.get("text", "")
 
+    from domain.taxonomy import load_taxonomy
+
     # taste-simulation-engine의 키워드/태그 확장 매핑
     keyword_map = {
         "우울": "우울해요",
@@ -26,11 +28,14 @@ def emotional_search(payload: dict) -> dict:
         "통쾌": "통쾌해요",
     }
 
-    emotion_scores = {}
+    taxonomy = load_taxonomy()
+    emotion_tags = taxonomy.get("emotion", {}).get("tags", [])
+    emotion_scores = {tag: 0.0 for tag in emotion_tags}
     if isinstance(text, str):
         for k, tag in keyword_map.items():
             if k in text:
-                emotion_scores[tag] = max(emotion_scores.get(tag, 0.0), 0.8)
+                if tag in emotion_scores:
+                    emotion_scores[tag] = max(emotion_scores.get(tag, 0.0), 0.8)
 
     if isinstance(text, str):
         if "무겁지 않" in text or "가볍" in text:
@@ -41,10 +46,14 @@ def emotional_search(payload: dict) -> dict:
                 emotion_scores.get("잔잔해요", 0.0), 0.6
             )
 
-    if not emotion_scores:
+    if max(emotion_scores.values()) == 0.0:
         # fallback deterministic scores
-        emotion_scores = {"감동적이에요": 0.6, "잔잔해요": 0.4}
-    query_vector = list(emotion_scores.values())
+        emotion_scores = {tag: 0.0 for tag in emotion_tags}
+        if "감동적이에요" in emotion_scores:
+            emotion_scores["감동적이에요"] = 0.6
+        if "잔잔해요" in emotion_scores:
+            emotion_scores["잔잔해요"] = 0.4
+    query_vector = [emotion_scores[tag] for tag in emotion_tags]
     filters = []
     genres = payload.get("genres") or []
     if genres:
