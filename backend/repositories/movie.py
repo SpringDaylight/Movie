@@ -28,10 +28,12 @@ class MovieRepository(BaseRepository[Movie]):
         self,
         query: Optional[str] = None,
         genres: Optional[List[str]] = None,
+        category: Optional[str] = None,
+        sort: str = "latest",
         skip: int = 0,
         limit: int = 20
     ) -> List[Movie]:
-        """Search movies by title and genres"""
+        """Search movies by title, genres, category with sorting"""
         db_query = self.db.query(Movie).options(
             joinedload(Movie.genres),
             joinedload(Movie.tags)
@@ -50,9 +52,67 @@ class MovieRepository(BaseRepository[Movie]):
         if genres:
             db_query = db_query.join(MovieGenre).filter(
                 MovieGenre.genre.in_(genres)
+            ).distinct()
+        
+        # Category filter (can be used for tags or other categorization)
+        if category:
+            db_query = db_query.join(MovieTag).filter(
+                MovieTag.tag.ilike(f"%{category}%")
+            ).distinct()
+        
+        # Sorting
+        if sort == "popular":
+            # Sort by review count
+            from sqlalchemy import func
+            db_query = (
+                db_query.outerjoin(Review)
+                .group_by(Movie.id)
+                .order_by(func.count(Review.id).desc())
             )
+        elif sort == "rating":
+            # Sort by average rating
+            from sqlalchemy import func
+            db_query = (
+                db_query.outerjoin(Review)
+                .group_by(Movie.id)
+                .order_by(func.coalesce(func.avg(Review.rating), 0).desc())
+            )
+        else:  # latest (default)
+            db_query = db_query.order_by(Movie.release.desc().nullslast())
         
         return db_query.offset(skip).limit(limit).all()
+    
+    def count_search(
+        self,
+        query: Optional[str] = None,
+        genres: Optional[List[str]] = None,
+        category: Optional[str] = None
+    ) -> int:
+        """Count movies matching search criteria"""
+        db_query = self.db.query(Movie)
+        
+        # Text search
+        if query:
+            db_query = db_query.filter(
+                or_(
+                    Movie.title.ilike(f"%{query}%"),
+                    Movie.synopsis.ilike(f"%{query}%")
+                )
+            )
+        
+        # Genre filter
+        if genres:
+            db_query = db_query.join(MovieGenre).filter(
+                MovieGenre.genre.in_(genres)
+            ).distinct()
+        
+        # Category filter
+        if category:
+            db_query = db_query.join(MovieTag).filter(
+                MovieTag.tag.ilike(f"%{category}%")
+            ).distinct()
+        
+        return db_query.count()
     
     def get_by_genre(self, genre: str, limit: int = 20) -> List[Movie]:
         """Get movies by genre"""

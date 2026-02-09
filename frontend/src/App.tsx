@@ -14,6 +14,7 @@ import SignupPage from "./pages/SignupPage";
 import FindIdPage from "./pages/FindIdPage";
 import FindPasswordPage from "./pages/FindPasswordPage";
 import TasteSurveyPage from "./pages/TasteSurveyPage";
+import KakaoCallbackPage from "./pages/KakaoCallbackPage";
 
 export default function App() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="/find-password" element={<FindPasswordPage />} />
         <Route path="/taste-survey" element={<TasteSurveyPage />} />
         <Route path="/reviews/:reviewId" element={<ReviewDetailPage />} />
+        <Route path="/auth/kakao/callback" element={<KakaoCallbackPage />} />
 
         {/* 레거시 HTML 경로 대응 (전환기 안전장치) */}
         <Route path="/home.html" element={<Navigate to="/" replace />} />

@@ -1,93 +1,85 @@
-import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import MainLayout from "../components/layout/MainLayout";
-
-type MovieItem = {
-  id: number;
-  title: string;
-  poster: string;
-  alt: string;
-  probability: string;
-  summary: string;
-  genres: string[];
-  tags: string[];
-  meta: string[];
-};
+import { getMovies, type Movie } from "../api/A2_movies";
 
 const sortFilters = [
   { value: "latest", label: "최신개봉작" },
   { value: "popular", label: "박스오피스 순위" },
   { value: "rating", label: "평점 높은 순" },
-  { value: "curation", label: "큐레이션 추천" },
 ];
 
 const genreFilters = [
-  { value: "romance", label: "로맨스" },
-  { value: "drama", label: "드라마" },
-  { value: "thriller", label: "스릴러" },
-  { value: "horror", label: "공포" },
-  { value: "action", label: "액션" },
-  { value: "crime", label: "범죄" },
-  { value: "sf", label: "SF" },
-  { value: "fantasy", label: "판타지" },
-  { value: "comedy", label: "코미디" },
-  { value: "animation", label: "애니메이션" },
-  { value: "history", label: "역사" },
-  { value: "documentary", label: "다큐멘터리" },
-];
-
-const movies: MovieItem[] = [
-  {
-    id: 10,
-    title: "조커",
-    poster: "https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg",
-    alt: "조커 포스터",
-    probability: "만족 확률 78%",
-    summary: "인물 심리와 관계 서사를 좋아할 때 추천.",
-    genres: ["drama", "thriller"],
-    tags: ["popular", "rating"],
-    meta: ["드라마", "151분", "15세"],
-  },
-  {
-    id: 11,
-    title: "작은 아씨들",
-    poster: "https://image.tmdb.org/t/p/w500/kqjL17yufvn9OVLyXYpvtyrFfak.jpg",
-    alt: "작은 아씨들 포스터",
-    probability: "만족 확률 72%",
-    summary: "섬세한 인물 성장과 따뜻한 톤을 선호할 때.",
-    genres: ["drama"],
-    tags: ["latest", "curation"],
-    meta: ["드라마", "135분", "전체"],
-  },
-  {
-    id: 12,
-    title: "그녀의 취미생활",
-    poster: "https://image.tmdb.org/t/p/w500/bKthjUmxjHjueYrEzdWjQfMArSg.jpg",
-    alt: "그녀의 취미생활 포스터",
-    probability: "만족 확률 66%",
-    summary: "잔잔한 일상과 관계의 결을 좋아할 때.",
-    genres: ["drama"],
-    tags: ["curation"],
-    meta: ["드라마", "109분", "12세"],
-  },
-  {
-    id: 13,
-    title: "듄",
-    poster: "https://image.tmdb.org/t/p/w500/4q2hz2m8hubgvijz8Ez0T2Os2Yv.jpg",
-    alt: "듄 포스터",
-    probability: "만족 확률 70%",
-    summary: "세계관과 몰입을 원할 때 좋은 선택.",
-    genres: ["sf"],
-    tags: ["popular", "rating"],
-    meta: ["SF", "155분", "12세"],
-  },
+  { value: "로맨스", label: "로맨스" },
+  { value: "드라마", label: "드라마" },
+  { value: "스릴러", label: "스릴러" },
+  { value: "공포", label: "공포" },
+  { value: "액션", label: "액션" },
+  { value: "범죄", label: "범죄" },
+  { value: "SF", label: "SF" },
+  { value: "판타지", label: "판타지" },
+  { value: "코미디", label: "코미디" },
+  { value: "애니메이션", label: "애니메이션" },
+  { value: "역사", label: "역사" },
+  { value: "다큐멘터리", label: "다큐멘터리" },
 ];
 
 export default function MoviesPage() {
+  const [searchParams] = useSearchParams();
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedSorts, setSelectedSorts] = useState<string[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [appliedSorts, setAppliedSorts] = useState<string[]>([]);
   const [appliedGenres, setAppliedGenres] = useState<string[]>([]);
+  const [appliedQuery, setAppliedQuery] = useState("");
+
+  // Initialize from URL query params
+  useEffect(() => {
+    const queryFromUrl = searchParams.get('query');
+    const genresFromUrl = searchParams.get('genres');
+    
+    if (queryFromUrl) {
+      setSearchQuery(queryFromUrl);
+      setAppliedQuery(queryFromUrl);
+    }
+    
+    if (genresFromUrl) {
+      const genreList = genresFromUrl.split(',').map(g => g.trim());
+      setSelectedGenres(genreList);
+      setAppliedGenres(genreList);
+    }
+  }, [searchParams]);
+
+  // Fetch movies from API
+  useEffect(() => {
+    const fetchMovies = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const sort = appliedSorts.length > 0 ? appliedSorts[0] as 'latest' | 'popular' | 'rating' : undefined;
+        const genres = appliedGenres.length > 0 ? appliedGenres.join(',') : undefined;
+        
+        const response = await getMovies({
+          query: appliedQuery || undefined,
+          genres,
+          sort,
+          page_size: 50,
+        });
+        
+        setMovies(response.movies);
+      } catch (err) {
+        setError('영화 목록을 불러오는데 실패했습니다.');
+        console.error('Failed to fetch movies:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMovies();
+  }, [appliedSorts, appliedGenres, appliedQuery]);
 
   const toggleValue = (
     value: string,
@@ -104,19 +96,8 @@ export default function MoviesPage() {
   const handleApplyFilters = () => {
     setAppliedSorts(selectedSorts);
     setAppliedGenres(selectedGenres);
+    setAppliedQuery(searchQuery);
   };
-
-  const filteredMovies = useMemo(() => {
-    return movies.filter((movie) => {
-      const matchGenre =
-        appliedGenres.length === 0 ||
-        appliedGenres.some((genre) => movie.genres.includes(genre));
-      const matchSort =
-        appliedSorts.length === 0 ||
-        appliedSorts.some((tag) => movie.tags.includes(tag));
-      return matchGenre && matchSort;
-    });
-  }, [appliedGenres, appliedSorts]);
 
   return (
     <MainLayout>
@@ -133,6 +114,9 @@ export default function MoviesPage() {
                 className="search-input"
                 type="text"
                 placeholder="영화 제목 검색"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleApplyFilters()}
               />
               <button
                 className="primary-btn"
@@ -200,26 +184,44 @@ export default function MoviesPage() {
             <h2>선택된 결과</h2>
             <p>선택한 기준으로 추천 영화가 표시됩니다.</p>
           </div>
-          <div className="movie-grid">
-            {filteredMovies.map((movie) => (
-              <Link className="card-link" to={`/movies/${movie.id}`} key={movie.id}>
-                <article className="card movie-tile">
-                  <img className="poster" src={movie.poster} alt={movie.alt} />
-                  <div className="movie-info">
-                    <h3>{movie.title}</h3>
-                    <p className="probability">{movie.probability}</p>
-                    <p className="muted">{movie.summary}</p>
-                    <span className="ghost-btn">상세 보기</span>
-                    <div className="meta-list">
-                      {movie.meta.map((meta) => (
-                        <span key={meta}>{meta}</span>
-                      ))}
+          
+          {loading && <p>로딩 중...</p>}
+          {error && <p className="error">{error}</p>}
+          
+          {!loading && !error && movies.length === 0 && (
+            <p>검색 결과가 없습니다.</p>
+          )}
+          
+          {!loading && !error && movies.length > 0 && (
+            <div className="movie-grid">
+              {movies.map((movie) => (
+                <Link className="card-link" to={`/movies/${movie.id}`} key={movie.id}>
+                  <article className="card movie-tile">
+                    <img 
+                      className="poster" 
+                      src={movie.poster_url || 'https://via.placeholder.com/500x750?text=No+Image'} 
+                      alt={`${movie.title} 포스터`} 
+                    />
+                    <div className="movie-info">
+                      <h3>{movie.title}</h3>
+                      <p className="muted">
+                        {movie.synopsis 
+                          ? movie.synopsis.substring(0, 60) + (movie.synopsis.length > 60 ? '...' : '')
+                          : '줄거리 정보가 없습니다.'}
+                      </p>
+                      <span className="ghost-btn">상세 보기</span>
+                      <div className="meta-list">
+                        {movie.genres.slice(0, 3).map((genre) => (
+                          <span key={genre}>{genre}</span>
+                        ))}
+                        {movie.runtime && <span>{movie.runtime}분</span>}
+                      </div>
                     </div>
-                  </div>
-                </article>
-              </Link>
-            ))}
-          </div>
+                  </article>
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
       </main>
     </MainLayout>
