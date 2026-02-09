@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import MainLayout from "../components/layout/MainLayout";
+import googleIcon from "../assets/web_neutral_sq_na@1x.png";
+import kakaoIcon from "../assets/kakao_sq_login.png";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -23,12 +25,12 @@ export default function LoginPage() {
   return (
     <MainLayout>
       <main className="container">
-        <section className="page-title">
+        <section className="page-title centered">
           <h1>로그인</h1>
         </section>
 
         <section className="section">
-          <article className="card">
+          <article className="card auth-card">
             <div className="form-grid">
               <label htmlFor="login-name">아이디</label>
               <input
@@ -50,21 +52,28 @@ export default function LoginPage() {
                 로그인
               </button>
             </div>
-            <div className="auth-actions">
-              <Link className="secondary-btn" to="/signup">회원가입</Link>
-              <Link className="secondary-btn" to="/find-id">아이디 찾기</Link>
-              <Link className="secondary-btn" to="/find-password">비밀번호 찾기</Link>
-            </div>
-          </article>
-        </section>
-        <section>
-          <div className="social-login">
-              <p className="muted">소셜 계정으로 로그인하기</p>
+            <ul className="auth-actions">
+              <li>
+                <Link className="secondary-btn" to="/signup">회원가입</Link>
+              </li>
+              <li>
+                <Link className="secondary-btn" to="/find-id">아이디 찾기</Link>
+              </li>
+              <li>
+                <Link className="secondary-btn" to="/find-password">비밀번호 찾기</Link>
+              </li>
+            </ul>
+            <div className="social-login">
               <div className="social-login-buttons">
-                <button className="secondary-btn social-btn" type="button"></button>
-                <button className="secondary-btn social-btn" type="button"></button>
+                <button className="social-btn" type="button" aria-label="구글로 로그인">
+                  <img src={googleIcon} alt="" />
+                </button>
+                <button className="social-btn" type="button" aria-label="카카오로 로그인">
+                  <img src={kakaoIcon} alt="" />
+                </button>
               </div>
             </div>
+          </article>
         </section>
       </main>
     </MainLayout>

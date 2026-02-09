@@ -54,7 +54,7 @@ export default function ActivityPage() {
               <p className="muted">가장 높은 장르</p>
               <p className="probability">드라마 · SF</p>
             </div>
-            <Link className="secondary-btn" to="/taste-analysis">
+            <Link className="primary-btn" to="/taste-analysis">
               자세히 보기
             </Link>
           </article>
