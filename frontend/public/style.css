@@ -20,6 +20,12 @@
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
 body {
   font-family: "Pretendard Variable", "Pretendard", "SUIT", "Apple SD Gothic Neo", sans-serif;
   background: radial-gradient(circle at top, #ffffff 0%, #f2f3f6 60%, #ededf1 100%);
@@ -157,7 +163,7 @@ textarea {
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 24px;
   align-items: center;
-  padding: 28px;
+  padding: 40px 28px;
   border-radius: var(--radius-lg);
   background: linear-gradient(135deg, #ffffff 0%, #fff3f7 60%, #fff 100%);
   box-shadow: var(--shadow);
@@ -180,7 +186,7 @@ textarea {
 
 .hero p {
   color: var(--text-subtle);
-  margin-bottom: 18px;
+  margin-bottom: 30px;
 }
 
 .hero-actions {
@@ -205,6 +211,10 @@ textarea {
   border: none;
   font-weight: 600;
   cursor: pointer;
+}
+
+.btn-animate {
+  animation: rise 0.7s ease both;
 }
 
 .primary-btn {
@@ -294,10 +304,21 @@ textarea {
   animation: rise 0.7s ease both;
 }
 
+.auth-card {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 26px 26px 30px;
+}
+
+.auth-card .form-grid {
+  gap: 16px;
+}
+
 .movie-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 18px;
+  align-items: stretch;
 }
 
 .movie-tile {
@@ -312,6 +333,41 @@ textarea {
   object-fit: cover;
   flex-shrink: 0;
   box-shadow: 0 10px 18px rgba(23, 23, 28, 0.18);
+}
+
+.movie-grid .movie-tile {
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+.movie-grid .poster {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;
+}
+
+.movie-grid .movie-info {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.movie-grid .ghost-btn {
+  margin-top: auto;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-subtle);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.movie-grid .ghost-btn:hover,
+.movie-grid .ghost-btn:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .movie-info h3,
@@ -382,6 +438,10 @@ textarea {
   margin-bottom: 18px;
 }
 
+.page-title.centered {
+  text-align: center;
+}
+
 .page-title h1 {
   font-size: 1.8rem;
 }
@@ -393,25 +453,78 @@ textarea {
 .auth-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 16px;
+  gap: 30px;
+  margin: 24px 0 0;
+  justify-content: center;   /* ⭐ 가로 가운데 정렬 */
+  list-style: none;
+  padding: 0;
+}
+
+.auth-actions li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.auth-actions .secondary-btn {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-subtle);
+  font-weight: 500;
+}
+
+.auth-actions .secondary-btn:hover,
+.auth-actions .secondary-btn:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .social-login {
   display: grid;
   gap: 12px;
+  margin-top: 32px;
   margin-bottom: 16px;
 }
 
 .social-login-buttons {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  justify-content: center; /* 아이콘이면 중앙 정렬 추천 */
   flex-wrap: wrap;
 }
 
 .social-btn {
-  flex: 1 1 200px;
+  all: unset;                 /* ⭐ 버튼 기본 스타일 제거 */
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 44px;                /* 터치 최소 영역 */
+  height: 44px;
 }
+
+/* 아이콘 크기 */
+.social-btn img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: block;
+  display: block;
+}
+
+/* 키보드 접근성 */
+.social-btn:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 4px;
+}
+
+/* 선택: 살짝 반응 */
+.social-btn:hover { opacity: 0.9; }
+.social-btn:active { transform: scale(0.95); }
+
 
 .filter-group {
   display: grid;
@@ -460,6 +573,7 @@ textarea {
 
 .profile-card {
   padding: 22px;
+  position: relative;
 }
 
 .profile-header {
@@ -536,6 +650,12 @@ textarea {
   cursor: pointer;
 }
 
+.settings-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+}
+
 .icon-btn:hover {
   background: #f5f5f9;
 }
@@ -594,7 +714,7 @@ textarea {
 
 .modal-content {
   position: relative;
-  width: min(720px, 100%);
+  width: min(620px, 100%);
   max-height: 90vh;
   overflow: auto;
   background: var(--bg-soft);
@@ -604,6 +724,37 @@ textarea {
   padding: 24px;
   z-index: 1;
   animation: rise 0.2s ease both;
+}
+
+/* Modal scrollbar styling */
+.modal-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(17, 17, 17, 0.35) transparent;
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: rgba(17, 17, 17, 0.35);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(17, 17, 17, 0.5);
+}
+
+.modal-content::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .modal-header {
@@ -764,6 +915,22 @@ textarea {
 .review-card {
   display: grid;
   gap: 12px;
+}
+
+.review-card.review-empty {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.review-card.review-empty .muted {
+  margin: 0;
+}
+
+.review-card.review-empty .primary-btn {
+  padding: 8px 14px;
+  font-size: 0.9rem;
 }
 
 .review-header {

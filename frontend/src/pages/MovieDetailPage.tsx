@@ -1,7 +1,9 @@
 import MainLayout from "../components/layout/MainLayout";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function MovieDetailPage() {
+  const navigate = useNavigate();
+
   return (
     <MainLayout>
       <main className="container">
@@ -63,11 +65,15 @@ export default function MovieDetailPage() {
             <h2>내 리뷰</h2>
             <p>내가 남긴 코멘트</p>
           </div>
-          <article className="card review-card">
+          <article className="card review-card review-empty">
             <p className="muted">아직 이 영화에 대한 내 리뷰가 없어요.</p>
-            <Link className="primary-btn" to="/log">
+            <button
+              className="primary-btn"
+              type="button"
+              onClick={() => navigate("/log")}
+            >
               리뷰 남기기
-            </Link>
+            </button>
           </article>
         </section>
 

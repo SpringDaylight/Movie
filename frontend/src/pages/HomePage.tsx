@@ -26,7 +26,7 @@ export default function HomePage() {
         <section className="section">
           <div className="section-header">
             <h2>나를 위한 추천</h2>
-            <button className="primary-btn">새로고침</button>
+            <button className="primary-btn btn-animate">새로고침</button>
           </div>
           <div className="movie-grid">
             <Link className="card-link" to="/movies/1">
