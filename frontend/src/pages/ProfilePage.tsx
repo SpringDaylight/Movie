@@ -144,10 +144,10 @@ export default function ProfilePage() {
               </div>
               <p className="muted">{profile.bio}</p>
               <div className="profile-meta">
-                <div>
+                {/* <div>
                   <span className="muted">닉네임</span>
                   <strong>{profile.nickname}</strong>
-                </div>
+                </div> */}
                 <div>
                   <span className="muted">이름</span>
                   <strong>{profile.realname}</strong>

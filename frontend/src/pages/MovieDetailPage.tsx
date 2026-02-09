@@ -54,9 +54,9 @@ export default function MovieDetailPage() {
               <p className="muted">후반부 과학 설정이 어렵게 느껴질 수 있어요.</p>
             </div>
 
-            <div className="hero-actions" style={{ marginTop: 18 }}>
+            {/* <div className="hero-actions" style={{ marginTop: 18 }}>
               <button className="primary-btn">바로 감상하기</button>
-            </div>
+            </div> */}
           </article>
         </section>
 

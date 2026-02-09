@@ -18,7 +18,6 @@ export default function ActivityPage() {
         <section className="section card">
           <div className="section-header">
             <h2>활동 요약</h2>
-            <p>시청/리뷰/컬렉션 현황</p>
           </div>
           <div className="activity-stats">
             <div>
@@ -63,7 +62,6 @@ export default function ActivityPage() {
         <section className="section">
           <div className="section-header">
             <h2>내 영화 보기</h2>
-            <p>포스터 그리드 · 리뷰 목록</p>
           </div>
           <div className="view-toggle" role="tablist" aria-label="내 영화 보기">
             <button
