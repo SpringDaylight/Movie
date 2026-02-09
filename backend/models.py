@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, DateTime, Integer, String, Text, Numeric
+from sqlalchemy import Column, Date, DateTime, Float, Integer, Numeric, String, Text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.sql import func
 
@@ -19,10 +19,13 @@ class Movie(Base):
 
     id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False)
+    original_title = Column(String, nullable=True)
     overview = Column(Text, nullable=True)
     release_date = Column(Date, nullable=True)
     runtime = Column(Integer, nullable=True)
     poster_url = Column(String, nullable=True)
+    vote_average = Column(Float, nullable=True)
+    vote_count = Column(Integer, nullable=True)
     category = Column(String, nullable=True)
     release_year = Column(Integer, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
@@ -42,6 +45,22 @@ class MovieKeyword(Base):
     id = Column(Integer, primary_key=True)
     movie_id = Column(Integer, nullable=False, index=True)
     keyword = Column(String, nullable=False)
+
+
+class MovieDirector(Base):
+    __tablename__ = "movie_directors"
+
+    id = Column(Integer, primary_key=True)
+    movie_id = Column(Integer, nullable=False, index=True)
+    name = Column(String, nullable=False)
+
+
+class MovieCast(Base):
+    __tablename__ = "movie_cast"
+
+    id = Column(Integer, primary_key=True)
+    movie_id = Column(Integer, nullable=False, index=True)
+    name = Column(String, nullable=False)
 
 
 class Review(Base):
