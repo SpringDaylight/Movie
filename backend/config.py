@@ -1,6 +1,5 @@
 import os
 import json
-import subprocess
 import boto3
 from typing import Optional
 from dotenv import load_dotenv
@@ -16,6 +15,9 @@ DEFAULT_WEIGHTS = {
     "ending": 0.2
 }
 
+# AWS Configuration
+AWS_REGION = os.getenv("AWS_REGION", "ap-northeast-2")
+
 # AWS RDS Configuration
 RDS_SECRET_ARN = os.getenv(
     "RDS_SECRET_ARN",
@@ -25,7 +27,6 @@ RDS_HOST = os.getenv("RDS_HOST", "movie-dev-db.cfyyuse8wwfa.ap-northeast-2.rds.a
 RDS_PORT = int(os.getenv("RDS_PORT", "5432"))
 RDS_DATABASE = os.getenv("RDS_DATABASE", "movie")
 RDS_USER = os.getenv("RDS_USER", "postgres")
-AWS_REGION = os.getenv("AWS_REGION", "ap-northeast-2")
 
 # SSL Certificate path
 SSL_CERT_PATH = os.getenv("SSL_CERT_PATH", "/certs/global-bundle.pem")
@@ -33,31 +34,28 @@ SSL_CERT_PATH = os.getenv("SSL_CERT_PATH", "/certs/global-bundle.pem")
 
 def get_rds_password() -> str:
     """
-    Retrieve RDS password from AWS Secrets Manager
+    Retrieve RDS password from AWS Secrets Manager using IRSA
     
     Returns:
         str: Database password
     """
     try:
-        # Try using AWS CLI (for local development)
-        result = subprocess.check_output([
-            'bash', '-lc',
-            f"aws secretsmanager get-secret-value --secret-id '{RDS_SECRET_ARN}' --query SecretString --output text"
-        ]).decode()
-        secret = json.loads(result)
+        # Use boto3 with IRSA (IAM Role for Service Account)
+        # No AWS credentials needed - uses Pod's IAM role
+        client = boto3.client('secretsmanager', region_name=AWS_REGION)
+        response = client.get_secret_value(SecretId=RDS_SECRET_ARN)
+        secret = json.loads(response['SecretString'])
         return secret['password']
     except Exception as e:
-        print(f"Failed to get password via AWS CLI: {e}")
+        print(f"Failed to get password from Secrets Manager: {e}")
         
-        # Fallback to boto3 (for production)
-        try:
-            client = boto3.client('secretsmanager', region_name=AWS_REGION)
-            response = client.get_secret_value(SecretId=RDS_SECRET_ARN)
-            secret = json.loads(response['SecretString'])
-            return secret['password']
-        except Exception as boto_error:
-            print(f"Failed to get password via boto3: {boto_error}")
-            raise RuntimeError(f"Could not retrieve RDS password: {boto_error}")
+        # Fallback for local development only
+        local_password = os.getenv("RDS_PASSWORD")
+        if local_password:
+            print("Using local RDS_PASSWORD from environment")
+            return local_password
+        
+        raise RuntimeError(f"Could not retrieve RDS password: {e}")
 
 
 def get_database_url() -> str:

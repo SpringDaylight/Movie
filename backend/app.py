@@ -1,10 +1,24 @@
-from decimal import Decimal
+﻿from decimal import Decimal
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import desc
 
 from db import SessionLocal
+<<<<<<< Updated upstream
 from models import Comment, Movie, MovieGenre, MovieTag, Review, ReviewLike, TasteAnalysis, User
+=======
+from models import (
+    Movie,
+    MovieGenre,
+    MovieTag,
+    Review,
+    Comment,
+    ReviewLike,
+    TasteAnalysis,
+    User,
+)
+>>>>>>> Stashed changes
 from utils.validator import validate_request
 
 from domain.a1_preference import analyze_preference
@@ -15,7 +29,23 @@ from domain.a5_emotional_search import emotional_search
 from domain.a6_group_simulation import simulate_group
 from domain.a7_taste_map import build_taste_map
 
-app = FastAPI()
+app = FastAPI(
+    title="Movie Recommendation API",
+    description="정서·서사 기반 영화 취향 시뮬레이션 & 감성 검색 서비스",
+    version="1.0.0"
+)
+
+# CORS middleware - 프론트엔드 연결을 위해 필수
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 DEFAULT_USER_ID = "me"
 DEFAULT_USER_NAME = "Demo User"
 
@@ -42,7 +72,11 @@ def _serialize_movie(db, movie: Movie) -> dict:
         row.genre
         for row in db.query(MovieGenre).filter(MovieGenre.movie_id == movie.id).all()
     ]
+<<<<<<< Updated upstream
     keywords = [
+=======
+    tags = [
+>>>>>>> Stashed changes
         row.tag
         for row in db.query(MovieTag).filter(MovieTag.movie_id == movie.id).all()
     ]
@@ -50,6 +84,7 @@ def _serialize_movie(db, movie: Movie) -> dict:
         "id": movie.id,
         "title": movie.title,
         "genres": genres,
+<<<<<<< Updated upstream
         "keywords": keywords,
         "directors": [],
         "cast": [],
@@ -61,6 +96,13 @@ def _serialize_movie(db, movie: Movie) -> dict:
         "vote_average": None,
         "vote_count": None,
         "category": None,
+=======
+        "tags": tags,
+        "synopsis": movie.synopsis,
+        "release": movie.release.isoformat() if movie.release else None,
+        "runtime": movie.runtime,
+        "poster_url": movie.poster_url,
+>>>>>>> Stashed changes
     }
 
 
@@ -70,8 +112,12 @@ def _serialize_review(review: Review) -> dict:
         "movie_id": review.movie_id,
         "user_id": review.user_id,
         "rating": _to_float(review.rating),
+<<<<<<< Updated upstream
         "comment": review.content,
         "likes": 0,
+=======
+        "content": review.content,
+>>>>>>> Stashed changes
     }
 
 
@@ -149,7 +195,8 @@ def list_movies(
     genres: str | None = None,
     category: str | None = None,
     sort: str | None = None,
-    page: int | None = None,
+    page: int = 1,
+    page_size: int = 20,
 ) -> dict:
     db = SessionLocal()
     try:
@@ -158,6 +205,8 @@ def list_movies(
             q = q.filter(Movie.title.ilike(f"%{query}%"))
 
         items = q.all()
+        total_before_filter = len(items)
+        
         if genres:
             want = {g.strip() for g in genres.split(",") if g.strip()}
             filtered = []
@@ -172,17 +221,31 @@ def list_movies(
                     filtered.append(movie)
             items = filtered
 
+<<<<<<< Updated upstream
         if sort == "year_desc":
             items = sorted(items, key=lambda m: m.release.year if m.release else 0, reverse=True)
+=======
+        total = len(items)
+
+        if sort == "latest":
+            items = sorted(items, key=lambda m: m.release or "", reverse=True)
+        elif sort == "popular":
+            # For popular, just use default order for now
+            items = sorted(items, key=lambda m: m.id)
+>>>>>>> Stashed changes
         else:
             items = sorted(items, key=lambda m: m.id)
 
-        if page and page > 0:
-            size = 20
-            start = (page - 1) * size
-            items = items[start : start + size]
+        # Pagination
+        start = (page - 1) * page_size
+        items = items[start : start + page_size]
 
-        return {"items": [_serialize_movie(db, movie) for movie in items]}
+        return {
+            "movies": [_serialize_movie(db, movie) for movie in items],
+            "total": total,
+            "page": page,
+            "page_size": page_size
+        }
     finally:
         db.close()
 
@@ -209,7 +272,10 @@ def list_movie_reviews(movie_id: int) -> dict:
             .order_by(desc(Review.created_at), desc(Review.id))
             .all()
         )
-        return {"items": [_serialize_review(review) for review in items]}
+        return {
+            "reviews": [_serialize_review(review) for review in items],
+            "total": len(items)
+        }
     finally:
         db.close()
 
@@ -225,7 +291,11 @@ def create_movie_review(movie_id: int, body: dict) -> dict:
             movie_id=movie_id,
             user_id=DEFAULT_USER_ID,
             rating=body.get("rating", 0),
+<<<<<<< Updated upstream
             content=body.get("comment", ""),
+=======
+            content=body.get("content", ""),
+>>>>>>> Stashed changes
         )
         db.add(review)
         db.commit()
@@ -256,8 +326,13 @@ def update_review(review_id: int, body: dict) -> dict:
             raise HTTPException(status_code=404, detail="Review not found")
         if "rating" in body:
             review.rating = body["rating"]
+<<<<<<< Updated upstream
         if "comment" in body:
             review.content = body["comment"]
+=======
+        if "content" in body:
+            review.content = body["content"]
+>>>>>>> Stashed changes
         db.commit()
         db.refresh(review)
         return _serialize_review(review)
@@ -280,10 +355,19 @@ def like_review(review_id: int) -> dict:
             .first()
         )
         if not existing:
+<<<<<<< Updated upstream
             db.add(ReviewLike(review_id=review_id, user_id=DEFAULT_USER_ID))
             db.commit()
         likes = db.query(ReviewLike).filter(ReviewLike.review_id == review_id).count()
         return {"likes": likes}
+=======
+            db.add(ReviewLike(review_id=review_id, user_id=DEFAULT_USER_ID, is_like=True))
+            db.commit()
+        
+        # Count likes
+        likes_count = db.query(ReviewLike).filter(ReviewLike.review_id == review_id, ReviewLike.is_like == True).count()
+        return {"likes": likes_count}
+>>>>>>> Stashed changes
     finally:
         db.close()
 
@@ -303,8 +387,15 @@ def unlike_review(review_id: int) -> dict:
         if existing:
             db.delete(existing)
             db.commit()
+<<<<<<< Updated upstream
         likes = db.query(ReviewLike).filter(ReviewLike.review_id == review_id).count()
         return {"likes": likes}
+=======
+        
+        # Count likes
+        likes_count = db.query(ReviewLike).filter(ReviewLike.review_id == review_id, ReviewLike.is_like == True).count()
+        return {"likes": likes_count}
+>>>>>>> Stashed changes
     finally:
         db.close()
 
@@ -325,7 +416,11 @@ def list_comments(review_id: int) -> dict:
                     "id": c.id,
                     "review_id": c.review_id,
                     "user_id": c.user_id,
+<<<<<<< Updated upstream
                     "comment": c.content,
+=======
+                    "content": c.content,
+>>>>>>> Stashed changes
                 }
                 for c in items
             ]
@@ -344,7 +439,11 @@ def create_comment(review_id: int, body: dict) -> dict:
         comment = Comment(
             review_id=review_id,
             user_id=DEFAULT_USER_ID,
+<<<<<<< Updated upstream
             content=body.get("comment", ""),
+=======
+            content=body.get("content", ""),
+>>>>>>> Stashed changes
         )
         db.add(comment)
         db.commit()
@@ -353,7 +452,11 @@ def create_comment(review_id: int, body: dict) -> dict:
             "id": comment.id,
             "review_id": comment.review_id,
             "user_id": comment.user_id,
+<<<<<<< Updated upstream
             "comment": comment.content,
+=======
+            "content": comment.content,
+>>>>>>> Stashed changes
         }
     finally:
         db.close()
@@ -364,7 +467,11 @@ def get_me() -> dict:
     db = SessionLocal()
     try:
         user = _ensure_default_user(db)
+<<<<<<< Updated upstream
         return {"id": user.id, "name": user.name, "avatar_url": user.avatar_text}
+=======
+        return {"id": user.id, "name": user.name, "avatar_text": user.avatar_text}
+>>>>>>> Stashed changes
     finally:
         db.close()
 
@@ -380,7 +487,10 @@ def list_my_reviews() -> dict:
             .order_by(desc(Review.created_at), desc(Review.id))
             .all()
         )
-        return {"items": [_serialize_review(review) for review in items]}
+        return {
+            "reviews": [_serialize_review(review) for review in items],
+            "total": len(items)
+        }
     finally:
         db.close()
 
@@ -392,11 +502,17 @@ def taste_analysis_stub() -> dict:
         _ensure_default_user(db)
         profile = db.query(TasteAnalysis).filter(TasteAnalysis.user_id == DEFAULT_USER_ID).first()
         if not profile:
+<<<<<<< Updated upstream
             return {"summary": "Taste profile is not generated yet.", "tags": []}
         return {
             "summary": "Taste profile loaded from database.",
             "tags": [],
             "summary_text": profile.summary_text,
+=======
+            return {"summary": "Taste profile is not generated yet."}
+        return {
+            "summary": profile.summary_text or "Taste profile loaded from database.",
+>>>>>>> Stashed changes
         }
     finally:
         db.close()
