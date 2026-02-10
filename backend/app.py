@@ -31,6 +31,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
+
 # CORS middleware - 프론트엔드 연결을 위해 필수
 app.add_middleware(
     CORSMiddleware,
