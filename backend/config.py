@@ -71,6 +71,13 @@ def get_database_url() -> str:
     database_url = os.getenv("DATABASE_URL")
     if database_url:
         return database_url
+
+    # Local fallback without AWS dependencies
+    if ENV.lower() == "local":
+        return os.getenv(
+            "LOCAL_DATABASE_URL",
+            "postgresql+psycopg://movie_user:password@localhost:5432/movie_local",
+        )
     
     # Get password from Secrets Manager
     password = get_rds_password()

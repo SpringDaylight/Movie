@@ -41,7 +41,9 @@ def get_engine():
     
     # Add SSL configuration for RDS (optional)
     ssl_cert_path = os.getenv("SSL_CERT_PATH", "/certs/global-bundle.pem")
-    ssl_mode = os.getenv("SSL_MODE", "prefer")  # prefer, require, verify-full
+    env = os.getenv("ENV", "local").lower()
+    default_ssl_mode = "disable" if env == "local" else "prefer"
+    ssl_mode = os.getenv("SSL_MODE", default_ssl_mode)  # prefer, require, verify-full, disable
     
     if is_postgres and ssl_mode != "disable":
         if os.path.exists(ssl_cert_path) and ssl_mode == "verify-full":
