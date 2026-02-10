@@ -1,17 +1,16 @@
-"""Update schema with new ERD structure
+"""Update schema with new ERD structure.
 
-Revision ID: 20260209_000002
-Revises: 20260206_000001
-Create Date: 2026-02-09
-
+This migration only contains changes applied after:
+- 20260206_000001_init
+- 20260209_000002_movie_people_and_metrics
 """
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 
-revision = "20260209_000002"
-down_revision = "20260206_000001"
+revision = "20260210_000003"
+down_revision = "20260209_000002"
 branch_labels = None
 depends_on = None
 

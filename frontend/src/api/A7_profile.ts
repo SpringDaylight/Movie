@@ -68,7 +68,7 @@ export function updateCurrentUser(
   userId: string,
   data: UpdateUserRequest
 ): Promise<User> {
-  return put<User>('/api/users/me', data);
+  return put<User>(`/api/users/me?user_id=${encodeURIComponent(userId)}`, data);
 }
 
 /**

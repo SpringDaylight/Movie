@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import MainLayout from "../components/layout/MainLayout";
 
 type ViewMode = "posters" | "reviews";

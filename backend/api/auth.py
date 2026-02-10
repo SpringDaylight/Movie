@@ -26,6 +26,8 @@ KAKAO_USER_INFO_URL = "https://kapi.kakao.com/v2/user/me"
 @router.get("/kakao/login")
 def kakao_login():
     """Redirect to Kakao OAuth login page"""
+    if not KAKAO_CLIENT_ID:
+        raise HTTPException(status_code=500, detail="KAKAO_CLIENT_ID is not configured")
     kakao_oauth_url = (
         f"{KAKAO_AUTH_URL}?"
         f"client_id={KAKAO_CLIENT_ID}&"
@@ -51,7 +53,8 @@ def kakao_callback(
             "redirect_uri": KAKAO_REDIRECT_URI,
             "code": code
         },
-        headers={"Content-Type": "application/x-www-form-urlencoded"}
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+        timeout=10
     )
     
     if token_response.status_code != 200:
@@ -59,11 +62,14 @@ def kakao_callback(
     
     token_data = token_response.json()
     access_token = token_data.get("access_token")
+    if not access_token:
+        raise HTTPException(status_code=400, detail="Failed to get access token from Kakao")
     
     # Get user info from Kakao
     user_response = requests.get(
         KAKAO_USER_INFO_URL,
-        headers={"Authorization": f"Bearer {access_token}"}
+        headers={"Authorization": f"Bearer {access_token}"},
+        timeout=10
     )
     
     if user_response.status_code != 200:

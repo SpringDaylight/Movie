@@ -91,7 +91,6 @@ backend/
 │   └── validator.py
 ├── tests/               # 테스트
 │   ├── db_connection_check.py
-│   └── local_smoke_test.py
 ├── scripts/             # 스크립트
 │   ├── download_rds_cert.py
 │   ├── migrate.py
@@ -165,7 +164,6 @@ backend/
 python tests/db_connection_check.py
 
 # 로컬 스모크 테스트
-python tests/local_smoke_test.py
 ```
 
 ## 📚 문서
@@ -204,16 +202,6 @@ docker build -t movie-backend .
 docker run -p 8000:8000 movie-backend
 ```
 
-### AWS Lambda
-
-```bash
-# Lambda 패키지 생성
-pip install -r requirements.txt -t package/
-cd package
-zip -r ../lambda.zip .
-cd ..
-zip -g lambda.zip *.py
-```
 
 ## 🔧 환경 변수
 
