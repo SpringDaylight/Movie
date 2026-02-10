@@ -247,12 +247,29 @@ textarea {
   gap: 16px;
 }
 
+.section-header.one-line {
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
 .section-header h2 {
   font-size: 1.3rem;
 }
 
 .section-header p {
   color: var(--text-subtle);
+}
+
+.section-header.centered {
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.section-header.centered h2 {
+  width: 100%;
 }
 
 .feature-grid {
@@ -625,6 +642,16 @@ textarea {
   margin: 10px 0 4px;
 }
 
+.profile-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+}
+
+.profile-meta-row > div {
+  min-width: 0;
+}
+
 .profile-meta strong {
   display: block;
   font-size: 0.98rem;
@@ -662,15 +689,58 @@ textarea {
 
 .activity-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   text-align: center;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.activity-stats .stat {
+  padding: 16px 12px;
+}
+
+.activity-stats .stat.clickable {
+  cursor: pointer;
+}
+
+.activity-stats .stat.full {
+  grid-column: 1 / -1;
+}
+
+.activity-stats .stat.full h2,
+.activity-stats .stat.full p {
+  text-align: center;
+}
+
+.activity-stats .stat.bottom-left,
+.activity-stats .stat.bottom-right {
+  border-top: 1px solid var(--line);
+}
+
+.activity-stats .stat.bottom-right {
+  border-left: 1px solid var(--line);
 }
 
 .activity-stats strong {
   display: block;
   font-size: 1.4rem;
   font-weight: 700;
+}
+
+.activity-stats .stat.clickable strong {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: transform 0.15s ease, color 0.15s ease;
+  transform-origin: center;
+}
+
+.activity-stats .stat.hoverable:hover strong,
+.activity-stats .stat.hoverable:focus-within strong {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transform: scale(1.05);
 }
 
 .activity-stats span {
@@ -680,11 +750,85 @@ textarea {
 
 .taste-preview {
   display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  align-items: center;
+  gap: 20px;
+  grid-template-columns: 1fr;
+  position: relative;
 }
 
+.taste-preview-header h2 {
+  font-size: 1.4rem;
+  margin-bottom: 6px;
+}
+
+.taste-preview-header p {
+  color: var(--text-subtle);
+}
+
+.taste-preview-header {
+  text-align: center;
+}
+.taste-preview-body {
+  display: grid;
+  gap: 16px;
+}
+
+.taste-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  gap: 0;
+}
+
+.taste-preview-grid .taste-preview-main,
+.taste-preview-grid .taste-preview-side {
+  padding: 12px 14px;
+  text-align: center;
+}
+
+.taste-preview-grid .taste-preview-side {
+  border-left: 1px solid var(--line);
+}
+
+.taste-preview-grid .tag-list {
+  justify-content: center;
+}
+@media (max-width: 640px) {
+  .taste-preview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .taste-preview-grid .taste-preview-side {
+    border-left: none;
+    border-top: 1px solid var(--line);
+  }
+}
+.taste-preview-body > div {
+  display: block;
+}
+
+.taste-preview-body .muted,
+.taste-preview-body .probability {
+  margin: 0 0 6px;
+}
+
+.taste-preview-body .tag-list {
+  margin-top: 8px !important;
+}
+.taste-preview-cta {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: auto;
+  padding: 12px 18px;
+}
+
+.card-divider {
+  height: 1px;
+  background: var(--line);
+  margin: 18px 0;
+}
 .modal {
   position: fixed;
   inset: 0;

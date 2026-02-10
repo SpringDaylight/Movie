@@ -10,6 +10,7 @@ from alembic import context
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from db import Base
+from config import get_database_url
 import models  # noqa: F401
 
 config = context.config
@@ -21,10 +22,17 @@ target_metadata = Base.metadata
 
 
 def get_url():
-    return os.getenv("DATABASE_URL", "")
+    """Get database URL from config.py (supports Secrets Manager)"""
+    try:
+        return get_database_url()
+    except Exception as e:
+        print(f"Warning: Could not get database URL from config: {e}")
+        # Fallback to environment variable
+        return os.getenv("DATABASE_URL", "")
 
 
 def run_migrations_offline() -> None:
+    """Run migrations in 'offline' mode."""
     url = get_url()
     context.configure(
         url=url,
@@ -38,6 +46,7 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
+    """Run migrations in 'online' mode."""
     configuration = config.get_section(config.config_ini_section) or {}
     configuration["sqlalchemy.url"] = get_url()
     connectable = engine_from_config(

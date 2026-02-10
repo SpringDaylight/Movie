@@ -1,8 +1,58 @@
+import { useEffect, useState } from "react";
 import MainLayout from "../components/layout/MainLayout";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { getMovie, getMovieReviews, type Movie, type Review } from "../api/A2_movies";
 
 export default function MovieDetailPage() {
   const navigate = useNavigate();
+  const { movieId } = useParams<{ movieId: string }>();
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchMovieData = async () => {
+      if (!movieId) return;
+      
+      setLoading(true);
+      setError(null);
+      try {
+        const movieData = await getMovie(Number(movieId));
+        setMovie(movieData);
+        
+        const reviewsData = await getMovieReviews(Number(movieId), { page_size: 10 });
+        setReviews(reviewsData.reviews);
+      } catch (err) {
+        setError('영화 정보를 불러오는데 실패했습니다.');
+        console.error('Failed to fetch movie data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMovieData();
+  }, [movieId]);
+
+  if (loading) {
+    return (
+      <MainLayout>
+        <main className="container">
+          <p>로딩 중...</p>
+        </main>
+      </MainLayout>
+    );
+  }
+
+  if (error || !movie) {
+    return (
+      <MainLayout>
+        <main className="container">
+          <p className="error">{error || '영화를 찾을 수 없습니다.'}</p>
+        </main>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
@@ -17,16 +67,20 @@ export default function MovieDetailPage() {
             <div className="movie-tile">
               <img
                 className="poster"
-                src="https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg"
-                alt="인터스텔라 포스터"
+                src={movie.poster_url || 'https://via.placeholder.com/500x750?text=No+Image'}
+                alt={`${movie.title} 포스터`}
               />
               <div className="movie-info">
-                <h3>인터스텔라</h3>
-                <p className="muted">2014 · SF/드라마 · 169분</p>
+                <h3>{movie.title}</h3>
+                <p className="muted">
+                  {movie.release ? new Date(movie.release).getFullYear() : '미정'} · 
+                  {movie.genres.slice(0, 2).join('/')} · 
+                  {movie.runtime ? `${movie.runtime}분` : '정보 없음'}
+                </p>
                 <div className="tag-list" style={{ marginTop: 10 }}>
-                  <span className="tag">우주</span>
-                  <span className="tag">가족</span>
-                  <span className="tag">감정선</span>
+                  {movie.tags.slice(0, 5).map((tag) => (
+                    <span key={tag} className="tag">{tag}</span>
+                  ))}
                 </div>
               </div>
             </div>
@@ -34,8 +88,7 @@ export default function MovieDetailPage() {
             <div className="section" style={{ marginTop: 18 }}>
               <h3>시놉시스</h3>
               <p className="muted">
-                지구의 식량 위기 속에서 인류를 구할 새로운 거처를 찾기 위해
-                우주로 떠나는 탐사대의 이야기입니다.
+                {movie.synopsis || '줄거리 정보가 없습니다.'}
               </p>
             </div>
 
@@ -82,76 +135,41 @@ export default function MovieDetailPage() {
             <h2>다른 사람들의 리뷰</h2>
             <p>이 영화에 대한 다양한 반응</p>
           </div>
-          <div className="review-list">
-            <Link className="card-link" to="/reviews/1">
-              <article className="card review-card">
-                <div className="review-header">
-                  <div className="review-user">
-                    <div className="review-avatar">HJ</div>
-                    <div>
-                      <p className="review-name">해진</p>
-                      <p className="muted">2026.01.30 · 평점 4.0</p>
+          {reviews.length === 0 ? (
+            <article className="card review-card review-empty">
+              <p className="muted">아직 이 영화에 대한 리뷰가 없어요.</p>
+            </article>
+          ) : (
+            <div className="review-list">
+              {reviews.map((review) => (
+                <Link className="card-link" to={`/reviews/${review.id}`} key={review.id}>
+                  <article className="card review-card">
+                    <div className="review-header">
+                      <div className="review-user">
+                        <div className="review-avatar">
+                          {review.user_id.substring(0, 2).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="review-name">{review.user_id}</p>
+                          <p className="muted">
+                            {new Date(review.created_at).toLocaleDateString('ko-KR')} · 평점 {review.rating}
+                          </p>
+                        </div>
+                      </div>
+                      <button className="ghost-btn">좋아요 {review.likes_count}</button>
                     </div>
-                  </div>
-                  <button className="ghost-btn">좋아요 24</button>
-                </div>
-                <p className="review-text">
-                  "과학보다 감정이 더 선명하게 남는 작품. 가족 서사가 깊게
-                  와닿았다."
-                </p>
-                <div className="review-actions">
-                  <span className="tag">가족</span>
-                  <span className="tag">감정선</span>
-                </div>
-              </article>
-            </Link>
-
-            <Link className="card-link" to="/reviews/2">
-              <article className="card review-card">
-                <div className="review-header">
-                  <div className="review-user">
-                    <div className="review-avatar">MK</div>
-                    <div>
-                      <p className="review-name">민규</p>
-                      <p className="muted">2026.01.29 · 평점 3.5</p>
-                    </div>
-                  </div>
-                  <button className="ghost-btn">좋아요 11</button>
-                </div>
-                <p className="review-text">
-                  "중반부는 숨 막히게 몰입했는데, 후반부는 조금 어렵게
-                  느껴졌다."
-                </p>
-                <div className="review-actions">
-                  <span className="tag">몰입</span>
-                  <span className="tag">난이도</span>
-                </div>
-              </article>
-            </Link>
-
-            <Link className="card-link" to="/reviews/3">
-              <article className="card review-card">
-                <div className="review-header">
-                  <div className="review-user">
-                    <div className="review-avatar">SO</div>
-                    <div>
-                      <p className="review-name">소연</p>
-                      <p className="muted">2026.01.26 · 평점 4.8</p>
-                    </div>
-                  </div>
-                  <button className="ghost-btn">좋아요 52</button>
-                </div>
-                <p className="review-text">
-                  "끝내주는 몰입감. IMAX로 다시 보고 싶은 영화 리스트에
-                  추가했다."
-                </p>
-                <div className="review-actions">
-                  <span className="tag">재관람</span>
-                  <span className="tag">IMAX</span>
-                </div>
-              </article>
-            </Link>
-          </div>
+                    {review.content && (
+                      <p className="review-text">
+                        {review.content.length > 100 
+                          ? review.content.substring(0, 100) + '...' 
+                          : review.content}
+                      </p>
+                    )}
+                  </article>
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
       </main>
     </MainLayout>

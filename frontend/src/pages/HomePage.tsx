@@ -1,7 +1,102 @@
+import { useEffect, useState } from "react";
 import MainLayout from "../components/layout/MainLayout";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { getMovies, type Movie } from "../api/A2_movies";
 
 export default function HomePage() {
+  const navigate = useNavigate();
+  const [recommendedMovies, setRecommendedMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      setLoading(true);
+      try {
+        const response = await getMovies({ sort: 'popular', page_size: 4 });
+        setRecommendedMovies(response.movies);
+      } catch (err) {
+        console.error('Failed to fetch recommendations:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecommendations();
+  }, []);
+
+  const handleSearch = () => {
+    const trimmedQuery = searchQuery.trim();
+    
+    if (!trimmedQuery) {
+      navigate('/movies');
+      return;
+    }
+    
+    // Check if query matches any genre (case-insensitive, Korean or English)
+    const genreMap: { [key: string]: string } = {
+      '로맨스': '로맨스',
+      '드라마': '드라마',
+      '스릴러': '스릴러',
+      '공포': '공포',
+      '액션': '액션',
+      '범죄': '범죄',
+      'sf': 'SF',
+      '판타지': '판타지',
+      '코미디': '코미디',
+      '애니메이션': '애니메이션',
+      '역사': '역사',
+      '다큐멘터리': '다큐멘터리',
+      '모험': '모험',
+      '가족': '가족',
+      '미스터리': '미스터리',
+      '전쟁': '전쟁',
+      '서부': '서부',
+      '음악': '음악',
+      // English mappings
+      'romance': '로맨스',
+      'drama': '드라마',
+      'thriller': '스릴러',
+      'horror': '공포',
+      'action': '액션',
+      'crime': '범죄',
+      'science fiction': 'SF',
+      'fantasy': '판타지',
+      'comedy': '코미디',
+      'animation': '애니메이션',
+      'history': '역사',
+      'documentary': '다큐멘터리',
+      'adventure': '모험',
+      'family': '가족',
+      'mystery': '미스터리',
+      'war': '전쟁',
+      'western': '서부',
+      'music': '음악'
+    };
+    
+    const lowerQuery = trimmedQuery.toLowerCase();
+    const matchedGenre = genreMap[lowerQuery];
+    
+    if (matchedGenre) {
+      // Search by genre
+      navigate(`/movies?genres=${encodeURIComponent(matchedGenre)}`);
+    } else {
+      // Search by title/synopsis
+      navigate(`/movies?query=${encodeURIComponent(trimmedQuery)}`);
+    }
+  };
+
+  const handleRefresh = async () => {
+    setLoading(true);
+    try {
+      const response = await getMovies({ sort: 'rating', page_size: 4 });
+      setRecommendedMovies(response.movies);
+    } catch (err) {
+      console.error('Failed to refresh recommendations:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <MainLayout>
       <main className="container">
@@ -17,8 +112,11 @@ export default function HomePage() {
                 className="search-input"
                 type="text"
                 placeholder="장르, 분위기, 제목으로 검색"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               />
-              <button className="primary-btn">맞춤 추천 받기</button>
+              <button className="primary-btn" onClick={handleSearch}>맞춤 추천 받기</button>
             </div>
           </div>
         </section>
@@ -26,77 +124,35 @@ export default function HomePage() {
         <section className="section">
           <div className="section-header">
             <h2>나를 위한 추천</h2>
-            <button className="primary-btn btn-animate">새로고침</button>
+            <button className="primary-btn btn-animate" onClick={handleRefresh}>새로고침</button>
           </div>
-          <div className="movie-grid">
-            <Link className="card-link" to="/movies/1">
-              <article className="card movie-tile">
-              <img
-                  className="poster"
-                src="https://image.tmdb.org/t/p/w500/5MwkWH9tYHv3mV9OdYTMR5qreIz.jpg"
-                  alt="이터널 선샤인 포스터"
-              />
-              <div className="movie-info">
-                <h3>이터널 선샤인</h3>
-                <p className="probability">만족 확률 81%</p>
-                <p className="muted">
-                  관계 중심 서사와 여운 있는 결말을 선호하셨어요.
-                </p>
-                <span className="ghost-btn">자세히 보기</span>
-              </div>
-              </article>
-            </Link>
           
-            <Link className="card-link" to="/movies/2">
-              <article className="card movie-tile">
-              <img
-                  className="poster"
-                src="https://image.tmdb.org/t/p/w500/uDO8zWDhfWwoFdKS4fzkUJt0Rf0.jpg"
-                  alt="라라랜드 포스터"
-              />
-              <div className="movie-info">
-                <h3>라라랜드</h3>
-                <p className="probability">만족 확률 74%</p>
-                <p className="muted">음악과 성장 서사를 좋아하셨어요.</p>
-                <span className="ghost-btn">자세히 보기</span>
-              </div>
-              </article>
-            </Link>
-
-            <Link className="card-link" to="/movies/3">
-              <article className="card movie-tile">
-              <img
-                  className="poster"
-                src="https://image.tmdb.org/t/p/w500/bgIt92V3IDysoAIcEfOo2ZK9PEv.jpg"
-                  alt="인셉션 포스터"
-              />
-              <div className="movie-info">
-                <h3>인셉션</h3>
-                <p className="probability">만족 확률 69%</p>
-                <p className="muted">
-                  퍼즐형 전개와 강한 몰입감을 선호하셨어요.
-                </p>
-                <span className="ghost-btn">자세히 보기</span>
-              </div>
-              </article>
-            </Link>
-
-            <Link className="card-link" to="/movies/4">
-              <article className="card movie-tile">
-              <img
-                  className="poster"
-                  src="https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg"
-                  alt="조커 포스터"
-                />
-                <div className="movie-info">
-                  <h3>조커</h3>
-                  <p className="probability">만족 확률 78%</p>
-                  <p className="muted">인물 심리와 관계 서사를 좋아할 때 추천.</p>
-                  <span className="ghost-btn">자세히 보기</span>
-                </div>
-              </article>
-            </Link>
-          </div>
+          {loading && <p>로딩 중...</p>}
+          
+          {!loading && recommendedMovies.length > 0 && (
+            <div className="movie-grid">
+              {recommendedMovies.map((movie) => (
+                <Link className="card-link" to={`/movies/${movie.id}`} key={movie.id}>
+                  <article className="card movie-tile">
+                    <img
+                      className="poster"
+                      src={movie.poster_url || 'https://via.placeholder.com/500x750?text=No+Image'}
+                      alt={`${movie.title} 포스터`}
+                    />
+                    <div className="movie-info">
+                      <h3>{movie.title}</h3>
+                      <p className="muted">
+                        {movie.synopsis 
+                          ? movie.synopsis.substring(0, 60) + (movie.synopsis.length > 60 ? '...' : '')
+                          : '줄거리 정보가 없습니다.'}
+                      </p>
+                      <span className="ghost-btn">자세히 보기</span>
+                    </div>
+                  </article>
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
       </main>
     </MainLayout>

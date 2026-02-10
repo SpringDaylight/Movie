@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import MainLayout from "../components/layout/MainLayout";
 import googleIcon from "../assets/web_neutral_sq_na@1x.png";
 import kakaoIcon from "../assets/kakao_sq_login.png";
+import { getKakaoLoginUrl } from "../api/auth";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export default function LoginPage() {
     const nameValue = name.trim();
     if (nameValue) {
       localStorage.setItem("mw_profile_name", nameValue);
+      localStorage.setItem("mw_user_id", nameValue);
       localStorage.setItem(
         "mw_profile_bio",
         "Enjoying drama and SF with strong emotional arcs."
@@ -20,6 +22,17 @@ export default function LoginPage() {
     }
     localStorage.setItem("mw_logged_in", "true");
     navigate("/mypage");
+  };
+
+  const handleKakaoLogin = async () => {
+    try {
+      const response = await getKakaoLoginUrl();
+      // Redirect to Kakao OAuth page
+      window.location.href = response.auth_url;
+    } catch (error) {
+      console.error('Failed to get Kakao login URL:', error);
+      alert('카카오 로그인에 실패했습니다.');
+    }
   };
 
   return (
@@ -68,7 +81,12 @@ export default function LoginPage() {
                 <button className="social-btn" type="button" aria-label="구글로 로그인">
                   <img src={googleIcon} alt="" />
                 </button>
-                <button className="social-btn" type="button" aria-label="카카오로 로그인">
+                <button 
+                  className="social-btn" 
+                  type="button" 
+                  aria-label="카카오로 로그인"
+                  onClick={handleKakaoLogin}
+                >
                   <img src={kakaoIcon} alt="" />
                 </button>
               </div>
