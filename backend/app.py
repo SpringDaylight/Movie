@@ -1,13 +1,10 @@
-﻿from decimal import Decimal
+from decimal import Decimal
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import desc
 
 from db import SessionLocal
-<<<<<<< Updated upstream
-from models import Comment, Movie, MovieGenre, MovieTag, Review, ReviewLike, TasteAnalysis, User
-=======
 from models import (
     Movie,
     MovieGenre,
@@ -18,7 +15,6 @@ from models import (
     TasteAnalysis,
     User,
 )
->>>>>>> Stashed changes
 from utils.validator import validate_request
 
 from domain.a1_preference import analyze_preference
@@ -72,11 +68,7 @@ def _serialize_movie(db, movie: Movie) -> dict:
         row.genre
         for row in db.query(MovieGenre).filter(MovieGenre.movie_id == movie.id).all()
     ]
-<<<<<<< Updated upstream
-    keywords = [
-=======
     tags = [
->>>>>>> Stashed changes
         row.tag
         for row in db.query(MovieTag).filter(MovieTag.movie_id == movie.id).all()
     ]
@@ -84,25 +76,11 @@ def _serialize_movie(db, movie: Movie) -> dict:
         "id": movie.id,
         "title": movie.title,
         "genres": genres,
-<<<<<<< Updated upstream
-        "keywords": keywords,
-        "directors": [],
-        "cast": [],
-        "overview": movie.synopsis,
-        "release_date": movie.release.isoformat() if movie.release else None,
-        "release_year": movie.release.year if movie.release else None,
-        "runtime": movie.runtime,
-        "poster_url": movie.poster_url,
-        "vote_average": None,
-        "vote_count": None,
-        "category": None,
-=======
         "tags": tags,
         "synopsis": movie.synopsis,
         "release": movie.release.isoformat() if movie.release else None,
         "runtime": movie.runtime,
         "poster_url": movie.poster_url,
->>>>>>> Stashed changes
     }
 
 
@@ -112,12 +90,7 @@ def _serialize_review(review: Review) -> dict:
         "movie_id": review.movie_id,
         "user_id": review.user_id,
         "rating": _to_float(review.rating),
-<<<<<<< Updated upstream
-        "comment": review.content,
-        "likes": 0,
-=======
         "content": review.content,
->>>>>>> Stashed changes
     }
 
 
@@ -129,7 +102,7 @@ def health() -> dict:
 @app.post("/analyze/preference")
 def analyze_preference_endpoint(body: dict) -> dict:
     try:
-        body = validate_request("a1_preference_request.json", body)
+        validate_request("a1_preference_request.json", body)
         return analyze_preference(body)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))
@@ -138,7 +111,7 @@ def analyze_preference_endpoint(body: dict) -> dict:
 @app.post("/movie/vector")
 def movie_vector_endpoint(body: dict) -> dict:
     try:
-        body = validate_request("a2_movie_vector_request.json", body)
+        validate_request("a2_movie_vector_request.json", body)
         return process_movie_vector(body)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))
@@ -147,7 +120,7 @@ def movie_vector_endpoint(body: dict) -> dict:
 @app.post("/predict/satisfaction")
 def predict_satisfaction_endpoint(body: dict) -> dict:
     try:
-        body = validate_request("a3_predict_request.json", body)
+        validate_request("a3_predict_request.json", body)
         return predict_satisfaction(body)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))
@@ -156,7 +129,7 @@ def predict_satisfaction_endpoint(body: dict) -> dict:
 @app.post("/explain/prediction")
 def explain_prediction_endpoint(body: dict) -> dict:
     try:
-        body = validate_request("a4_explain_request.json", body)
+        validate_request("a4_explain_request.json", body)
         return explain_prediction(body)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))
@@ -165,7 +138,7 @@ def explain_prediction_endpoint(body: dict) -> dict:
 @app.post("/search/emotional")
 def emotional_search_endpoint(body: dict) -> dict:
     try:
-        body = validate_request("a5_search_request.json", body)
+        validate_request("a5_search_request.json", body)
         return emotional_search(body)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))
@@ -174,7 +147,7 @@ def emotional_search_endpoint(body: dict) -> dict:
 @app.post("/group/simulate")
 def group_simulate_endpoint(body: dict) -> dict:
     try:
-        body = validate_request("a6_group_request.json", body)
+        validate_request("a6_group_request.json", body)
         return simulate_group(body)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))
@@ -183,7 +156,7 @@ def group_simulate_endpoint(body: dict) -> dict:
 @app.post("/map/taste")
 def taste_map_endpoint(body: dict) -> dict:
     try:
-        body = validate_request("a7_map_request.json", body)
+        validate_request("a7_map_request.json", body)
         return build_taste_map(body)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))
@@ -221,10 +194,6 @@ def list_movies(
                     filtered.append(movie)
             items = filtered
 
-<<<<<<< Updated upstream
-        if sort == "year_desc":
-            items = sorted(items, key=lambda m: m.release.year if m.release else 0, reverse=True)
-=======
         total = len(items)
 
         if sort == "latest":
@@ -232,7 +201,6 @@ def list_movies(
         elif sort == "popular":
             # For popular, just use default order for now
             items = sorted(items, key=lambda m: m.id)
->>>>>>> Stashed changes
         else:
             items = sorted(items, key=lambda m: m.id)
 
@@ -291,11 +259,7 @@ def create_movie_review(movie_id: int, body: dict) -> dict:
             movie_id=movie_id,
             user_id=DEFAULT_USER_ID,
             rating=body.get("rating", 0),
-<<<<<<< Updated upstream
-            content=body.get("comment", ""),
-=======
             content=body.get("content", ""),
->>>>>>> Stashed changes
         )
         db.add(review)
         db.commit()
@@ -326,13 +290,8 @@ def update_review(review_id: int, body: dict) -> dict:
             raise HTTPException(status_code=404, detail="Review not found")
         if "rating" in body:
             review.rating = body["rating"]
-<<<<<<< Updated upstream
-        if "comment" in body:
-            review.content = body["comment"]
-=======
         if "content" in body:
             review.content = body["content"]
->>>>>>> Stashed changes
         db.commit()
         db.refresh(review)
         return _serialize_review(review)
@@ -355,19 +314,12 @@ def like_review(review_id: int) -> dict:
             .first()
         )
         if not existing:
-<<<<<<< Updated upstream
-            db.add(ReviewLike(review_id=review_id, user_id=DEFAULT_USER_ID))
-            db.commit()
-        likes = db.query(ReviewLike).filter(ReviewLike.review_id == review_id).count()
-        return {"likes": likes}
-=======
             db.add(ReviewLike(review_id=review_id, user_id=DEFAULT_USER_ID, is_like=True))
             db.commit()
         
         # Count likes
         likes_count = db.query(ReviewLike).filter(ReviewLike.review_id == review_id, ReviewLike.is_like == True).count()
         return {"likes": likes_count}
->>>>>>> Stashed changes
     finally:
         db.close()
 
@@ -387,15 +339,10 @@ def unlike_review(review_id: int) -> dict:
         if existing:
             db.delete(existing)
             db.commit()
-<<<<<<< Updated upstream
-        likes = db.query(ReviewLike).filter(ReviewLike.review_id == review_id).count()
-        return {"likes": likes}
-=======
         
         # Count likes
         likes_count = db.query(ReviewLike).filter(ReviewLike.review_id == review_id, ReviewLike.is_like == True).count()
         return {"likes": likes_count}
->>>>>>> Stashed changes
     finally:
         db.close()
 
@@ -416,11 +363,7 @@ def list_comments(review_id: int) -> dict:
                     "id": c.id,
                     "review_id": c.review_id,
                     "user_id": c.user_id,
-<<<<<<< Updated upstream
-                    "comment": c.content,
-=======
                     "content": c.content,
->>>>>>> Stashed changes
                 }
                 for c in items
             ]
@@ -439,11 +382,7 @@ def create_comment(review_id: int, body: dict) -> dict:
         comment = Comment(
             review_id=review_id,
             user_id=DEFAULT_USER_ID,
-<<<<<<< Updated upstream
-            content=body.get("comment", ""),
-=======
             content=body.get("content", ""),
->>>>>>> Stashed changes
         )
         db.add(comment)
         db.commit()
@@ -452,11 +391,7 @@ def create_comment(review_id: int, body: dict) -> dict:
             "id": comment.id,
             "review_id": comment.review_id,
             "user_id": comment.user_id,
-<<<<<<< Updated upstream
-            "comment": comment.content,
-=======
             "content": comment.content,
->>>>>>> Stashed changes
         }
     finally:
         db.close()
@@ -467,11 +402,7 @@ def get_me() -> dict:
     db = SessionLocal()
     try:
         user = _ensure_default_user(db)
-<<<<<<< Updated upstream
-        return {"id": user.id, "name": user.name, "avatar_url": user.avatar_text}
-=======
         return {"id": user.id, "name": user.name, "avatar_text": user.avatar_text}
->>>>>>> Stashed changes
     finally:
         db.close()
 
@@ -502,17 +433,9 @@ def taste_analysis_stub() -> dict:
         _ensure_default_user(db)
         profile = db.query(TasteAnalysis).filter(TasteAnalysis.user_id == DEFAULT_USER_ID).first()
         if not profile:
-<<<<<<< Updated upstream
-            return {"summary": "Taste profile is not generated yet.", "tags": []}
-        return {
-            "summary": "Taste profile loaded from database.",
-            "tags": [],
-            "summary_text": profile.summary_text,
-=======
             return {"summary": "Taste profile is not generated yet."}
         return {
             "summary": profile.summary_text or "Taste profile loaded from database.",
->>>>>>> Stashed changes
         }
     finally:
         db.close()
