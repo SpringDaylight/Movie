@@ -9,7 +9,7 @@ from sqlalchemy import text
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from db import SessionLocal
-from models import Movie, MovieCast, MovieDirector, MovieGenre, MovieKeyword, User
+from models import Movie, MovieGenre, MovieTag, User
 
 
 DEFAULT_DATASET = (
@@ -52,14 +52,6 @@ def _normalize_str_list(value) -> list[str]:
     return out
 
 
-def _category(item: dict) -> str:
-    vote_count = int(item.get("vote_count") or 0)
-    vote_average = float(item.get("vote_average") or 0.0)
-    if vote_count >= 1000 or vote_average >= 7.5:
-        return "popular"
-    return "catalog"
-
-
 def seed_movies(dataset_path: Path) -> None:
     data = _load_json(dataset_path)
     db = SessionLocal()
@@ -84,31 +76,18 @@ def seed_movies(dataset_path: Path) -> None:
                 db.add(movie)
 
             movie.title = str(title)
-            movie.original_title = item.get("original_title")
-            movie.overview = item.get("overview")
+            movie.synopsis = item.get("overview")
             movie.runtime = item.get("runtime")
-            movie.release_date = _parse_date(item.get("release_date"))
-            movie.release_year = (
-                movie.release_date.year if movie.release_date else None
-            )
+            movie.release = _parse_date(item.get("release_date"))
             movie.poster_url = item.get("poster_path")
-            movie.vote_average = float(item.get("vote_average") or 0.0)
-            movie.vote_count = int(item.get("vote_count") or 0)
-            movie.category = _category(item)
 
             db.query(MovieGenre).filter(MovieGenre.movie_id == int(movie_id)).delete()
-            db.query(MovieKeyword).filter(MovieKeyword.movie_id == int(movie_id)).delete()
-            db.query(MovieDirector).filter(MovieDirector.movie_id == int(movie_id)).delete()
-            db.query(MovieCast).filter(MovieCast.movie_id == int(movie_id)).delete()
+            db.query(MovieTag).filter(MovieTag.movie_id == int(movie_id)).delete()
 
             for genre in _normalize_str_list(item.get("genres")):
                 db.add(MovieGenre(movie_id=int(movie_id), genre=genre))
             for keyword in _normalize_str_list(item.get("keywords")):
-                db.add(MovieKeyword(movie_id=int(movie_id), keyword=keyword))
-            for director in _normalize_str_list(item.get("directors")):
-                db.add(MovieDirector(movie_id=int(movie_id), name=director))
-            for cast_name in _normalize_str_list(item.get("cast")):
-                db.add(MovieCast(movie_id=int(movie_id), name=cast_name))
+                db.add(MovieTag(movie_id=int(movie_id), tag=keyword))
 
             loaded += 1
 

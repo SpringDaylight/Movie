@@ -4,18 +4,7 @@ from fastapi import FastAPI, HTTPException
 from sqlalchemy import desc
 
 from db import SessionLocal
-from models import (
-    Movie,
-    MovieCast,
-    MovieDirector,
-    MovieGenre,
-    MovieKeyword,
-    Review,
-    ReviewComment,
-    ReviewLike,
-    TasteProfile,
-    User,
-)
+from models import Comment, Movie, MovieGenre, MovieTag, Review, ReviewLike, TasteAnalysis, User
 from utils.validator import validate_request
 
 from domain.a1_preference import analyze_preference
@@ -54,33 +43,24 @@ def _serialize_movie(db, movie: Movie) -> dict:
         for row in db.query(MovieGenre).filter(MovieGenre.movie_id == movie.id).all()
     ]
     keywords = [
-        row.keyword
-        for row in db.query(MovieKeyword).filter(MovieKeyword.movie_id == movie.id).all()
-    ]
-    directors = [
-        row.name
-        for row in db.query(MovieDirector).filter(MovieDirector.movie_id == movie.id).all()
-    ]
-    cast = [
-        row.name
-        for row in db.query(MovieCast).filter(MovieCast.movie_id == movie.id).all()
+        row.tag
+        for row in db.query(MovieTag).filter(MovieTag.movie_id == movie.id).all()
     ]
     return {
         "id": movie.id,
         "title": movie.title,
-        "original_title": movie.original_title,
         "genres": genres,
         "keywords": keywords,
-        "directors": directors,
-        "cast": cast,
-        "overview": movie.overview,
-        "release_date": movie.release_date.isoformat() if movie.release_date else None,
-        "release_year": movie.release_year,
+        "directors": [],
+        "cast": [],
+        "overview": movie.synopsis,
+        "release_date": movie.release.isoformat() if movie.release else None,
+        "release_year": movie.release.year if movie.release else None,
         "runtime": movie.runtime,
         "poster_url": movie.poster_url,
-        "vote_average": movie.vote_average,
-        "vote_count": movie.vote_count,
-        "category": movie.category,
+        "vote_average": None,
+        "vote_count": None,
+        "category": None,
     }
 
 
@@ -90,8 +70,8 @@ def _serialize_review(review: Review) -> dict:
         "movie_id": review.movie_id,
         "user_id": review.user_id,
         "rating": _to_float(review.rating),
-        "comment": review.comment,
-        "likes": review.likes_count,
+        "comment": review.content,
+        "likes": 0,
     }
 
 
@@ -103,7 +83,7 @@ def health() -> dict:
 @app.post("/analyze/preference")
 def analyze_preference_endpoint(body: dict) -> dict:
     try:
-        validate_request("a1_preference_request.json", body)
+        body = validate_request("a1_preference_request.json", body)
         return analyze_preference(body)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))
@@ -112,7 +92,7 @@ def analyze_preference_endpoint(body: dict) -> dict:
 @app.post("/movie/vector")
 def movie_vector_endpoint(body: dict) -> dict:
     try:
-        validate_request("a2_movie_vector_request.json", body)
+        body = validate_request("a2_movie_vector_request.json", body)
         return process_movie_vector(body)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))
@@ -121,7 +101,7 @@ def movie_vector_endpoint(body: dict) -> dict:
 @app.post("/predict/satisfaction")
 def predict_satisfaction_endpoint(body: dict) -> dict:
     try:
-        validate_request("a3_predict_request.json", body)
+        body = validate_request("a3_predict_request.json", body)
         return predict_satisfaction(body)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))
@@ -130,7 +110,7 @@ def predict_satisfaction_endpoint(body: dict) -> dict:
 @app.post("/explain/prediction")
 def explain_prediction_endpoint(body: dict) -> dict:
     try:
-        validate_request("a4_explain_request.json", body)
+        body = validate_request("a4_explain_request.json", body)
         return explain_prediction(body)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))
@@ -139,7 +119,7 @@ def explain_prediction_endpoint(body: dict) -> dict:
 @app.post("/search/emotional")
 def emotional_search_endpoint(body: dict) -> dict:
     try:
-        validate_request("a5_search_request.json", body)
+        body = validate_request("a5_search_request.json", body)
         return emotional_search(body)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))
@@ -148,7 +128,7 @@ def emotional_search_endpoint(body: dict) -> dict:
 @app.post("/group/simulate")
 def group_simulate_endpoint(body: dict) -> dict:
     try:
-        validate_request("a6_group_request.json", body)
+        body = validate_request("a6_group_request.json", body)
         return simulate_group(body)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))
@@ -157,7 +137,7 @@ def group_simulate_endpoint(body: dict) -> dict:
 @app.post("/map/taste")
 def taste_map_endpoint(body: dict) -> dict:
     try:
-        validate_request("a7_map_request.json", body)
+        body = validate_request("a7_map_request.json", body)
         return build_taste_map(body)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))
@@ -176,8 +156,6 @@ def list_movies(
         q = db.query(Movie)
         if query:
             q = q.filter(Movie.title.ilike(f"%{query}%"))
-        if category:
-            q = q.filter(Movie.category == category)
 
         items = q.all()
         if genres:
@@ -195,7 +173,7 @@ def list_movies(
             items = filtered
 
         if sort == "year_desc":
-            items = sorted(items, key=lambda m: m.release_year or 0, reverse=True)
+            items = sorted(items, key=lambda m: m.release.year if m.release else 0, reverse=True)
         else:
             items = sorted(items, key=lambda m: m.id)
 
@@ -247,8 +225,7 @@ def create_movie_review(movie_id: int, body: dict) -> dict:
             movie_id=movie_id,
             user_id=DEFAULT_USER_ID,
             rating=body.get("rating", 0),
-            comment=body.get("comment", ""),
-            likes_count=0,
+            content=body.get("comment", ""),
         )
         db.add(review)
         db.commit()
@@ -280,7 +257,7 @@ def update_review(review_id: int, body: dict) -> dict:
         if "rating" in body:
             review.rating = body["rating"]
         if "comment" in body:
-            review.comment = body["comment"]
+            review.content = body["comment"]
         db.commit()
         db.refresh(review)
         return _serialize_review(review)
@@ -304,9 +281,9 @@ def like_review(review_id: int) -> dict:
         )
         if not existing:
             db.add(ReviewLike(review_id=review_id, user_id=DEFAULT_USER_ID))
-            review.likes_count = (review.likes_count or 0) + 1
             db.commit()
-        return {"likes": review.likes_count}
+        likes = db.query(ReviewLike).filter(ReviewLike.review_id == review_id).count()
+        return {"likes": likes}
     finally:
         db.close()
 
@@ -325,9 +302,9 @@ def unlike_review(review_id: int) -> dict:
         )
         if existing:
             db.delete(existing)
-            review.likes_count = max(0, (review.likes_count or 0) - 1)
             db.commit()
-        return {"likes": review.likes_count}
+        likes = db.query(ReviewLike).filter(ReviewLike.review_id == review_id).count()
+        return {"likes": likes}
     finally:
         db.close()
 
@@ -337,9 +314,9 @@ def list_comments(review_id: int) -> dict:
     db = SessionLocal()
     try:
         items = (
-            db.query(ReviewComment)
-            .filter(ReviewComment.review_id == review_id)
-            .order_by(desc(ReviewComment.created_at), desc(ReviewComment.id))
+            db.query(Comment)
+            .filter(Comment.review_id == review_id)
+            .order_by(desc(Comment.created_at), desc(Comment.id))
             .all()
         )
         return {
@@ -348,7 +325,7 @@ def list_comments(review_id: int) -> dict:
                     "id": c.id,
                     "review_id": c.review_id,
                     "user_id": c.user_id,
-                    "comment": c.comment,
+                    "comment": c.content,
                 }
                 for c in items
             ]
@@ -364,10 +341,10 @@ def create_comment(review_id: int, body: dict) -> dict:
         _ensure_default_user(db)
         if not db.query(Review).filter(Review.id == review_id).first():
             raise HTTPException(status_code=404, detail="Review not found")
-        comment = ReviewComment(
+        comment = Comment(
             review_id=review_id,
             user_id=DEFAULT_USER_ID,
-            comment=body.get("comment", ""),
+            content=body.get("comment", ""),
         )
         db.add(comment)
         db.commit()
@@ -376,7 +353,7 @@ def create_comment(review_id: int, body: dict) -> dict:
             "id": comment.id,
             "review_id": comment.review_id,
             "user_id": comment.user_id,
-            "comment": comment.comment,
+            "comment": comment.content,
         }
     finally:
         db.close()
@@ -387,7 +364,7 @@ def get_me() -> dict:
     db = SessionLocal()
     try:
         user = _ensure_default_user(db)
-        return {"id": user.id, "name": user.name, "avatar_url": user.avatar_url}
+        return {"id": user.id, "name": user.name, "avatar_url": user.avatar_text}
     finally:
         db.close()
 
@@ -413,16 +390,13 @@ def taste_analysis_stub() -> dict:
     db = SessionLocal()
     try:
         _ensure_default_user(db)
-        profile = db.query(TasteProfile).filter(TasteProfile.user_id == DEFAULT_USER_ID).first()
+        profile = db.query(TasteAnalysis).filter(TasteAnalysis.user_id == DEFAULT_USER_ID).first()
         if not profile:
             return {"summary": "Taste profile is not generated yet.", "tags": []}
-        tags = sorted((profile.emotion_scores or {}).keys())[:5]
         return {
             "summary": "Taste profile loaded from database.",
-            "tags": tags,
-            "emotion_scores": profile.emotion_scores,
-            "narrative_traits": profile.narrative_traits,
-            "ending_preference": profile.ending_preference,
+            "tags": [],
+            "summary_text": profile.summary_text,
         }
     finally:
         db.close()

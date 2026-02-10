@@ -1,7 +1,7 @@
 /**
  * Authentication API
  */
-import { get } from './http';
+import { get, post } from './http';
 
 export interface KakaoLoginResponse {
   auth_url: string;
@@ -32,5 +32,5 @@ export function handleKakaoCallback(code: string): Promise<KakaoCallbackResponse
  * Logout
  */
 export function logout(): Promise<{ message: string }> {
-  return get<{ message: string }>('/api/auth/logout');
+  return post<{ message: string }>('/api/auth/logout');
 }
