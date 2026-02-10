@@ -33,6 +33,14 @@
               }
             },
             "additionalProperties": false
+          },
+          "likes": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "dislikes": {
+            "type": "array",
+            "items": { "type": "string" }
           }
         },
         "additionalProperties": false
@@ -62,7 +70,9 @@
         }
       },
       "additionalProperties": false
-    }
+    },
+    "penalty_weight": { "type": "number" },
+    "boost_weight": { "type": "number" }
   },
   "additionalProperties": false
 }

@@ -1,35 +1,64 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0)
+import HomePage from "./pages/HomePage";
+import MoviesPage from "./pages/MoviesPage";
+import MovieDetailPage from "./pages/MovieDetailPage";
+import GroupPage from "./pages/GroupPage";
+import TasteAnalysisPage from "./pages/TasteAnalysisPage";
+import ActivityPage from "./pages/ActivityPage";
+import CommentPage from "./pages/CommentPage";
+import ReviewDetailPage from "./pages/ReviewDetailPage";
+import ProfilePage from "./pages/ProfilePage";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import FindIdPage from "./pages/FindIdPage";
+import FindPasswordPage from "./pages/FindPasswordPage";
+import TasteSurveyPage from "./pages/TasteSurveyPage";
+import KakaoCallbackPage from "./pages/KakaoCallbackPage";
 
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <BrowserRouter>
+      <Routes>
+        {/* React 기준 정상 라우트 */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/movies" element={<MoviesPage />} />
+        <Route path="/movies/:movieId" element={<MovieDetailPage />} />
+        <Route path="/group" element={<GroupPage />} />
+        <Route path="/mypage" element={<ActivityPage />} />
+        <Route path="/taste-analysis" element={<TasteAnalysisPage />} />
+        <Route path="/log" element={<CommentPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/find-id" element={<FindIdPage />} />
+        <Route path="/find-password" element={<FindPasswordPage />} />
+        <Route path="/taste-survey" element={<TasteSurveyPage />} />
+        <Route path="/reviews/:reviewId" element={<ReviewDetailPage />} />
+        <Route path="/auth/kakao/callback" element={<KakaoCallbackPage />} />
 
-export default App
+        {/* 레거시 HTML 경로 대응 (전환기 안전장치) */}
+        <Route path="/home.html" element={<Navigate to="/" replace />} />
+        <Route path="/movies.html" element={<Navigate to="/movies" replace />} />
+        <Route
+          path="/movie-detail.html"
+          element={<Navigate to="/movies/1" replace />}
+        />
+        <Route path="/group.html" element={<Navigate to="/group" replace />} />
+        <Route path="/mypage.html" element={<Navigate to="/mypage" replace />} />
+        <Route
+          path="/taste-analysis.html"
+          element={<Navigate to="/taste-analysis" replace />}
+        />
+        <Route path="/log.html" element={<Navigate to="/log" replace />} />
+        <Route
+          path="/review-detail.html"
+          element={<Navigate to="/reviews/1" replace />}
+        />
+
+        {/* fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
