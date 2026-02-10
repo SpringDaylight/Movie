@@ -12,14 +12,14 @@ export default function ActivityPage() {
     <MainLayout>
       <main className="container">
         
-        <section className="section">
-          <article className="card taste-preview">
+        <section className="section card activity-summary-card">
+          <article className="taste-preview">
             <div className="taste-preview-header">
               <h2>취향 분석 대시보드</h2>
               <p>최근 평가 기반 요약</p>
             </div>
-            <div className="taste-preview-body">
-              <div>
+            <div className="taste-preview-body taste-preview-grid">
+              <div className="taste-preview-main">
                 <p className="muted">선호 키워드</p>
                 <div className="tag-list" style={{ marginTop: 8 }}>
                   <span className="tag">감정선</span>
@@ -27,36 +27,34 @@ export default function ActivityPage() {
                   <span className="tag">여운</span>
                 </div>
               </div>
-              <div>
+              <div className="taste-preview-side">
                 <p className="muted">가장 높은 장르</p>
                 <p className="probability">드라마 · SF</p>
               </div>
             </div>
-            <button
+            {/* <button
               className="primary-btn taste-preview-cta"
               type="button"
               onClick={() => navigate("/taste-analysis")}
             >
               자세히보기
-            </button>
+            </button> */}
           </article>
-        </section>
+          <div className="card-divider" />
+
         {/*  
         <section className="page-title">
           <h1>내 활동</h1>
           <p>내가 본 영화와 남긴 리뷰를 관리해요.</p>
         </section> */}
 
-        <section className="section card">
+        
           <div className="section-header centered">
-            
+            <h2>활동 요약</h2>
+            <p>내가 본 영화와 남긴 리뷰를 관리해요.</p>
             {/* <p>시청/리뷰/컬렉션 현황</p> */}
           </div>  
           <div className="activity-stats">
-            <div className="stat full">
-              <h2>활동 요약</h2>
-              <p>내가 본 영화와 남긴 리뷰를 관리해요.</p>
-            </div>
             <div
               className="stat bottom-left clickable hoverable"
               role="button"

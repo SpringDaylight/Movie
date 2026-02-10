@@ -264,6 +264,8 @@ textarea {
 .section-header.centered {
   justify-content: center;
   text-align: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 .section-header.centered h2 {
@@ -705,6 +707,11 @@ textarea {
   grid-column: 1 / -1;
 }
 
+.activity-stats .stat.full h2,
+.activity-stats .stat.full p {
+  text-align: center;
+}
+
 .activity-stats .stat.bottom-left,
 .activity-stats .stat.bottom-right {
   border-top: 1px solid var(--line);
@@ -756,18 +763,71 @@ textarea {
   color: var(--text-subtle);
 }
 
+.taste-preview-header {
+  text-align: center;
+}
 .taste-preview-body {
   display: grid;
   gap: 16px;
 }
 
+.taste-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  gap: 0;
+}
+
+.taste-preview-grid .taste-preview-main,
+.taste-preview-grid .taste-preview-side {
+  padding: 12px 14px;
+  text-align: center;
+}
+
+.taste-preview-grid .taste-preview-side {
+  border-left: 1px solid var(--line);
+}
+
+.taste-preview-grid .tag-list {
+  justify-content: center;
+}
+@media (max-width: 640px) {
+  .taste-preview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .taste-preview-grid .taste-preview-side {
+    border-left: none;
+    border-top: 1px solid var(--line);
+  }
+}
+.taste-preview-body > div {
+  display: block;
+}
+
+.taste-preview-body .muted,
+.taste-preview-body .probability {
+  margin: 0 0 6px;
+}
+
+.taste-preview-body .tag-list {
+  margin-top: 8px !important;
+}
 .taste-preview-cta {
-  justify-self: end;
-  align-self: end;
+  position: absolute;
+  top: 18px;
+  right: 18px;
   width: auto;
   padding: 12px 18px;
 }
 
+.card-divider {
+  height: 1px;
+  background: var(--line);
+  margin: 18px 0;
+}
 .modal {
   position: fixed;
   inset: 0;
