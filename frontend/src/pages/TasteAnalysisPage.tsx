@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export default function TasteAnalysisPage() {
   return (
     <MainLayout>
-      <main className="container">
+      <main className="container taste-analysis-page">
         <section className="taste-hero">
           <div>
             <h1>도슨님의 취향 분석</h1>
@@ -162,6 +162,36 @@ export default function TasteAnalysisPage() {
                   <h3>이터널 선샤인</h3>
                   <p className="probability">평점 4.6</p>
                   <p className="muted">관계의 감정선을 섬세하게 다뤘어요.</p>
+                </div>
+              </article>
+            </Link>
+
+            <Link className="card-link" to="/movies/3">
+              <article className="card movie-tile">
+                <img
+                  className="poster"
+                  src="https://image.tmdb.org/t/p/w500/bgIt92V3IDysoAIcEfOo2ZK9PEv.jpg"
+                  alt="??? ???"
+                />
+                <div className="movie-info">
+                  <h3>???</h3>
+                  <p className="probability">?? 4.7</p>
+                  <p className="muted">??? ?? ???? ???? ????.</p>
+                </div>
+              </article>
+            </Link>
+
+            <Link className="card-link" to="/movies/4">
+              <article className="card movie-tile">
+                <img
+                  className="poster"
+                  src="https://image.tmdb.org/t/p/w500/uDO8zWDhfWwoFdKS4fzkUJt0Rf0.jpg"
+                  alt="???? ???"
+                />
+                <div className="movie-info">
+                  <h3>????</h3>
+                  <p className="probability">?? 4.5</p>
+                  <p className="muted">???? ??? ?? ?? ?????.</p>
                 </div>
               </article>
             </Link>

@@ -338,6 +338,22 @@ textarea {
   align-items: stretch;
 }
 
+.taste-analysis-page .movie-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 1100px) {
+  .taste-analysis-page .movie-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .taste-analysis-page .movie-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .movie-tile {
   display: flex;
   gap: 14px;
@@ -546,6 +562,37 @@ textarea {
 .filter-group {
   display: grid;
   gap: 16px;
+}
+
+.search-results {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 8px;
+  display: grid;
+  gap: 6px;
+}
+
+.search-item {
+  all: unset;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+
+.search-item:hover,
+.search-item:focus-visible {
+  background: rgba(255, 47, 110, 0.08);
+}
+
+.search-empty {
+  padding: 10px;
+  text-align: center;
+  color: var(--text-subtle);
 }
 
 .filter-title {
@@ -808,6 +855,18 @@ textarea {
   justify-content: space-between;
   gap: 12px;
   text-align: left;
+  position: relative;
+}
+
+.taste-preview-header.with-cta > div {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+.taste-preview-top-cta {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .taste-preview-top-cta {
@@ -1291,6 +1350,11 @@ textarea {
 .review-list {
   display: grid;
   gap: 16px;
+}
+
+.activity-summary-card .view-section {
+  margin-top: 12px;
+  padding-bottom: 12px;
 }
 
 .view-section.is-hidden {

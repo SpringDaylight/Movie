@@ -1,6 +1,22 @@
+import { useState } from "react";
 import MainLayout from "../components/layout/MainLayout";
 
 export default function GroupPage() {
+  const [groupType, setGroupType] = useState("개인");
+  const [userQuery, setUserQuery] = useState("");
+  const userResults = [
+    { id: "mirae_01", name: "미래", nickname: "미래" },
+    { id: "noir_02", name: "노을", nickname: "노을빛" },
+    { id: "summer_03", name: "여름", nickname: "summer" },
+  ].filter((user) => {
+    const query = userQuery.trim().toLowerCase();
+    if (!query) return false;
+    return (
+      user.name.toLowerCase().includes(query) ||
+      user.nickname.toLowerCase().includes(query) ||
+      user.id.toLowerCase().includes(query)
+    );
+  });
   return (
     <MainLayout>
       <main className="container">
@@ -12,11 +28,40 @@ export default function GroupPage() {
         <section className="section card">
           <div className="form-grid">
             <label>그룹 선택</label>
-            <select defaultValue="개인">
-              <option>개인</option>
-              <option>친구 모임</option>
+            <select
+              value={groupType}
+              onChange={(event) => setGroupType(event.target.value)}
+            >
+              <option>친구</option>
               <option>가족</option>
+              <option>연인</option>
+              <option>기타</option>
             </select>
+            {groupType !== "" && (
+              <>
+                <label>사용자 검색</label>
+                <input
+                  type="text"
+                  placeholder="사용자 이름/닉네임/아이디 검색"
+                  value={userQuery}
+                  onChange={(event) => setUserQuery(event.target.value)}
+                />
+                {userQuery.trim().length > 0 && (
+                  <div className="search-results">
+                    {userResults.length == 0 && (
+                      <div className="search-empty">검색 결과가 없습니다.</div>
+                    )}
+                    {userResults.map((user) => (
+                      <button className="search-item" type="button" key={user.id}>
+                        <strong>{user.nickname}</strong>
+                        <span>{user.name}</span>
+                        <span className="muted">@{user.id}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
             <label>영화 선택</label>
             <input type="text" placeholder="영화 제목 입력" />
             <button className="primary-btn">분석하기</button>
