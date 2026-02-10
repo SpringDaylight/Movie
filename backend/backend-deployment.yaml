@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bolrea-malrea-backend
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bolrea-malrea-backend
+  template:
+    metadata:
+      labels:
+        app: bolrea-malrea-backend
+    spec:
+      serviceAccountName: bolrea-backend-sa
+      containers:
+        - name: backend
+          image: 416963226971.dkr.ecr.ap-northeast-2.amazonaws.com/bolrea-malrea-backend:dev
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: bolrea-backend-config
+            - secretRef:
+                name: bolrea-backend-secret

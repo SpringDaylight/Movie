@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bolrea-backend-config
+  namespace: dev
+data:
+  # AWS Configuration
+  AWS_REGION: ap-northeast-2
+  ENV: development
+  
+  # RDS Configuration (비밀번호 제외)
+  RDS_HOST: movie-dev-db.cfyyuse8wwfa.ap-northeast-2.rds.amazonaws.com
+  RDS_PORT: "5432"
+  RDS_DATABASE: movie
+  RDS_USER: postgres
+  RDS_SECRET_ARN: arn:aws:secretsmanager:ap-northeast-2:416963226971:secret:rds!db-f3aa3685-4bca-4982-bae8-c628e185fdf2-078IVh
+  
+  # Database Settings
+  SQL_ECHO: "false"
+  
+  # Bedrock Configuration
+  BEDROCK_MODEL_ID: anthropic.claude-3-sonnet-20240229-v1:0
+  BEDROCK_MAX_TOKENS: "1024"
+  BEDROCK_TEMPERATURE: "0.2"
+  
+  # OAuth Configuration
+  KAKAO_REDIRECT_URI: http://localhost:5174/auth/kakao/callback
+
