@@ -92,9 +92,24 @@ export default function MovieDetailPage() {
               </p>
             </div>
 
-            <div className="hero-actions" style={{ marginTop: 18 }}>
-              <button className="primary-btn">바로 감상하기</button>
+            <div className="section" style={{ marginTop: 18 }}>
+              <h3>나와의 적합도</h3>
+              <p className="probability">적합 확률 83%</p>
+              <ul className="list">
+                <li>거대한 세계관과 몰입도 높은 전개를 선호하셨어요.</li>
+                <li>가족 서사가 중심인 작품을 좋아하셨어요.</li>
+                <li>유사 취향 사용자 반응이 긍정적이었어요.</li>
+              </ul>
             </div>
+
+            <div className="section" style={{ marginTop: 18 }}>
+              <h3>주의할 점</h3>
+              <p className="muted">후반부 과학 설정이 어렵게 느껴질 수 있어요.</p>
+            </div>
+
+            {/* <div className="hero-actions" style={{ marginTop: 18 }}>
+              <button className="primary-btn">바로 감상하기</button>
+            </div> */}
           </article>
         </section>
 

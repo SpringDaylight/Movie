@@ -144,19 +144,25 @@ export default function ProfilePage() {
               </div>
               <p className="muted">{profile.bio}</p>
               <div className="profile-meta">
-                <div className="profile-meta-row three">
-                  <div>
-                    <span className="muted">이름</span>
-                    <strong>{profile.realname}</strong>
-                  </div>
-                  <div>
-                    <span className="muted">나이대</span>
-                    <strong>{profile.age}</strong>
-                  </div>
-                  <div>
-                    <span className="muted">성별</span>
-                    <strong>{profile.gender}</strong>
-                  </div>
+                {/* <div>
+                  <span className="muted">닉네임</span>
+                  <strong>{profile.nickname}</strong>
+                </div> */}
+                <div>
+                  <span className="muted">이름</span>
+                  <strong>{profile.realname}</strong>
+                </div>
+                <div>
+                  <span className="muted">나이대</span>
+                  <strong>{profile.age}</strong>
+                </div>
+                <div>
+                  <span className="muted">성별</span>
+                  <strong>{profile.gender}</strong>
+                </div>
+                <div>
+                  <span className="muted">아이디</span>
+                  <strong>{profile.id}</strong>
                 </div>
                 <div className="profile-meta-row two">
                   <div>
