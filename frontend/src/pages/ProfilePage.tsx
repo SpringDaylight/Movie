@@ -129,21 +129,25 @@ export default function ProfilePage() {
 
         <section className="section card profile-card">
           <div className="profile-header">
-            <div className="profile-avatar">{avatarLabel}</div>
             <div className="profile-info">
-              <div className="profile-header-row">
-                <h2>{profile.nickname}</h2>
-                <button
-                  className="icon-btn settings-btn"
-                  type="button"
-                  aria-label="설정 열기"
-                  onClick={() => setSettingsOpen(true)}
-                >
-                  ⚙
-                </button>
-              </div>
-              <p className="muted">{profile.bio}</p>
-              <div className="profile-meta">
+              <div className="profile-top-row">
+                <div className="profile-header-row">
+                  <div className="profile-avatar">{avatarLabel}</div>
+                  <div className="profile-title">
+                    <h2>{profile.nickname}</h2>
+                    <p className="muted profile-bio">{profile.bio}</p>
+                  </div>
+                  <button
+                    className="icon-btn settings-btn"
+                    type="button"
+                    aria-label="설정 열기"
+                    onClick={() => setSettingsOpen(true)}
+                  >
+                    ⚙
+                  </button>
+                </div>
+                <div className="profile-divider" />
+                <div className="profile-meta">
                 {/* <div>
                   <span className="muted">닉네임</span>
                   <strong>{profile.nickname}</strong>
@@ -164,38 +168,24 @@ export default function ProfilePage() {
                   <span className="muted">아이디</span>
                   <strong>{profile.id}</strong>
                 </div>
-                <div className="profile-meta-row two">
-                  <div>
-                    <span className="muted">아이디</span>
-                    <strong>{profile.id}</strong>
-                  </div>
-                  <div>
-                    <span className="muted">이메일</span>
-                    <strong>{profile.email}</strong>
-                  </div>
+                <div>
+                  <span className="muted">이메일</span>
+                  <strong>{profile.email}</strong>
                 </div>
               </div>
-              <div className="profile-actions">
-                <button
-                  className="secondary-btn"
-                  type="button"
-                  onClick={handleOpenEdit}
-                >
-                  프로필 수정
-                </button>
-                <button
-                  className="secondary-btn"
-                  type="button"
-                  onClick={handleOpenPassword}
-                >
-                  비밀번호 변경
-                </button>
+              </div>
+              {/* <div className="profile-actions">
                 <button className="ghost-btn" type="button" onClick={handleLogout}>
                   로그아웃
                 </button>
-              </div>
-              {editVisible && (
-                <div className="profile-edit">
+              </div> */}
+              <div
+                className={`profile-edit-slot ${
+                  editVisible || passwordVisible ? "is-open" : ""
+                }`}
+              >
+                {editVisible && (
+                  <div className="profile-edit">
                   <label htmlFor="profile-nickname-input">닉네임</label>
                   <input
                     id="profile-nickname-input"
@@ -305,8 +295,8 @@ export default function ProfilePage() {
                   </div>
                 </div>
               )}
-              {passwordVisible && (
-                <div className="profile-edit">
+                {passwordVisible && (
+                  <div className="profile-edit">
                   <label htmlFor="password-current">현재 비밀번호</label>
                   <input id="password-current" type="password" placeholder="••••••••" />
                   <label htmlFor="password-next">새 비밀번호</label>
@@ -330,7 +320,8 @@ export default function ProfilePage() {
                     </button>
                   </div>
                 </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </section>
@@ -384,6 +375,26 @@ export default function ProfilePage() {
                 <input type="checkbox" defaultChecked />
                 <span />
               </label>
+            </div>
+          </div>
+
+          <div className="modal-section">
+            <h3>계정 설정</h3>
+            <div className="profile-actions">
+              <button
+                className="secondary-btn"
+                type="button"
+                onClick={handleOpenEdit}
+              >
+                프로필 수정
+              </button>
+              <button
+                className="secondary-btn"
+                type="button"
+                onClick={handleOpenPassword}
+              >
+                비밀번호 변경
+              </button>
             </div>
           </div>
 

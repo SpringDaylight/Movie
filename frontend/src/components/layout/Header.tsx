@@ -12,7 +12,7 @@ export default function Header() {
     const savedName = localStorage.getItem("mw_profile_name");
 
     if (isLoggedIn) {
-      setProfileHref("/profile");
+      setProfileHref("/mypage");
       setProfileLabel(savedName ? savedName.slice(0, 2) : "DS");
     } else {
       setProfileHref("/login");
@@ -59,7 +59,11 @@ export default function Header() {
         </nav>
 
         <div className="top-actions">
-          <Link className="profile-chip" to={profileHref}>
+          <Link
+            className="profile-chip"
+            to={profileHref}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          >
             {profileLabel}
           </Link>
         </div>
